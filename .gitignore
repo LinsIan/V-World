@@ -74,6 +74,15 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+#library
+*.aar
+*.bc
+*.dll
+*.dylib
+*.so
+**/*.framework/*
+!**/*.framework/*.meta
+
 # mediapipe package
 Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*
 !Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.meta
