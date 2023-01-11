@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6c567d9487e48cab50fcf6a876f16a, type: 3}
+  m_Name: Sample3DModelData
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField: 1
+  <Description>k__BackingField: Sample 3D Models
+  <ModelType>k__BackingField: 1
+  <Assets>k__BackingField:
+  - <PrefabRef>k__BackingField:
+      m_AssetGUID: c7fa179501fb94687b26f30d5903f7d4
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    <SpriteRef>k__BackingField:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - <PrefabRef>k__BackingField:
+      m_AssetGUID: 334e9ae6b79a34ef0846fa53855069ba
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    <SpriteRef>k__BackingField:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - <PrefabRef>k__BackingField:
+      m_AssetGUID: 67acbf333c3914165a65cbb453cbf24e
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    <SpriteRef>k__BackingField:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  <Sensitivities>k__BackingField:
+  - <Name>k__BackingField: FaceX
+    <EffectedParamIds>k__BackingField: 0000000008000000
+    basicRatio: 1
+    value: 1
+  - <Name>k__BackingField: FaceY
+    <EffectedParamIds>k__BackingField: 0100000009000000
+    basicRatio: 1
+    value: 1
+  - <Name>k__BackingField: FaceZ
+    <EffectedParamIds>k__BackingField: 020000000a000000
+    basicRatio: 1
+    value: 1
+  - <Name>k__BackingField: EyeBall
+    <EffectedParamIds>k__BackingField: 0500000006000000
+    basicRatio: 2
+    value: 1
+  - <Name>k__BackingField: EyeOpen
+    <EffectedParamIds>k__BackingField: 0300000004000000
+    basicRatio: 3
+    value: 1
+  - <Name>k__BackingField: Mouth
+    <EffectedParamIds>k__BackingField: 07000000
+    basicRatio: 1
+    value: 1
+  <MotionRates>k__BackingField: []
+  currentAsset: 0
