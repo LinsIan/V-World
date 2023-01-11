@@ -1,0 +1,41 @@
+@startuml
+' LiveSystem
+abstract class LiveSystem
+class Live2DLiveSystem
+class Home3DLiveSystem
+
+LiveSystem <|-- Live2DLiveSystem
+LiveSystem <|-- Home3DLiveSystem
+
+' ModelController
+abstract class ModelController
+class Live2DModelController
+class Home3DModelController
+
+ModelController <|-- Live2DModelController
+ModelController <|-- Home3DModelController
+
+' Calculater
+abstract class Calculater
+class FaceDataCalculater
+class HandDataCalculater
+class Home3DFaceDataCalculater
+class Live2DFaceDataCalculater
+
+Calculater <|-- FaceDataCalculater
+Calculater <|-- HandDataCalculater
+Calculater <|-- Home3DFaceDataCalculater
+Calculater <|-- Live2DFaceDataCalculater
+
+
+' Common
+class Interpolator
+class ScalarKalmanFilter
+
+' Data
+class BoneParameter
+class FaceData
+class LandmarkPoint
+class ModelAsset
+class SettingValue
+@enduml
