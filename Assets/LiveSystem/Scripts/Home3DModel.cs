@@ -22,7 +22,7 @@ namespace LiveSystem
 
         private void Awake()
         {
-            parameters = new Dictionary<ParamId, BoneParameter>(ParamIdComparer.Instance)
+            parameters = new Dictionary<ParamId, BoneParameter>()
             {
                 { ParamId.ParamNeck, neck },
                 { ParamId.ParamSpine, spine },

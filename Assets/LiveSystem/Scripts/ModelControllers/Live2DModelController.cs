@@ -110,7 +110,7 @@ namespace LiveSystem
 
         protected void InitParameters()
         {
-            parameters = new Dictionary<ParamId, CubismParameter>(ParamIdComparer.Instance);
+            parameters = new Dictionary<ParamId, CubismParameter>();
             var modelParamteters = cubismModel.Parameters;
             var values = (ParamId[])Enum.GetValues(typeof(ParamId));
             foreach (ParamId item in values)
