@@ -26,20 +26,9 @@ namespace LiveSystem.Data
         public float BodyAngleZ { get; }
 
         public FaceData(float angleX, float angleY, float angleZ, float eyeLOpen, float eyeROpen, float eyeBallX, float eyeBallY,
-            float mouthOpenY, float bodyAngleX, float bodyAngleY, float bodyAngleZ)
-        {
-            AngleX = angleX;
-            AngleY = angleY;
-            AngleZ = angleZ;
-            EyeLOpen = eyeLOpen;
-            EyeROpen = eyeROpen;
-            EyeBallX = eyeBallX;
-            EyeBallY = eyeBallY;
-            MouthOpenY = mouthOpenY;
-            BodyAngleX = bodyAngleX;
-            BodyAngleY = bodyAngleY;
-            BodyAngleZ = bodyAngleZ;
-        }
+            float mouthOpenY, float bodyAngleX, float bodyAngleY, float bodyAngleZ) 
+        => (AngleX, AngleY, AngleZ, EyeLOpen, EyeROpen, EyeBallX, EyeBallY, MouthOpenY, BodyAngleX, BodyAngleY, BodyAngleZ) =
+           (angleX, angleY, angleZ, eyeLOpen, eyeROpen, eyeBallX, eyeBallY, mouthOpenY, bodyAngleX, bodyAngleY, bodyAngleZ);
 
         public static FaceData Lerp(in FaceData a, in FaceData b, float t = 1)
         {
