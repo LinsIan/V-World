@@ -13,7 +13,7 @@ using LiveSystem.Data;
 
 namespace LiveSystem
 {
-    public class FaceDataCalculater : Calculater
+    public class FaceDataCalculater : Calculator
     {
         public Action<FaceData> OnFaceDataOutput { get; set; }
 

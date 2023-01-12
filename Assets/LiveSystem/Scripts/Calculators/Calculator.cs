@@ -9,7 +9,7 @@ using Mediapipe.Unity;
 
 namespace LiveSystem
 {
-    public abstract class Calculater
+    public abstract class Calculator
     {
         public virtual void OnLandmarksOutput(object sender, OutputEventArgs<NormalizedLandmarkList> data)
         {

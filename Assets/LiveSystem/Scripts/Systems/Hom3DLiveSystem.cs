@@ -16,7 +16,7 @@ namespace LiveSystem
         {
             var newModelController = new Home3DModelController(modelData, LiveMode.FaceOnly);
             var graph = solution?.GetComponent<HolisticTrackingGraph>();
-            var faceDataCalculater = new Home3DFaceDataCalculater(keyPoints);
+            var faceDataCalculater = new Home3DFaceDataCalculator(keyPoints);
             //lefthand、righthand
             //pose (world?)
 

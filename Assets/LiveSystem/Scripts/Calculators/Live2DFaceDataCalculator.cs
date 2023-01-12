@@ -8,9 +8,9 @@ using LiveSystem.Data;
 
 namespace LiveSystem
 {
-    public class Live2DFaceDataCalculater : FaceDataCalculater
+    public class Live2DFaceDataCalculator : FaceDataCalculater
     {
-        public Live2DFaceDataCalculater(FaceLandmarkKeyPoints points) : base(points)
+        public Live2DFaceDataCalculator(FaceLandmarkKeyPoints points) : base(points)
         {
         }
 

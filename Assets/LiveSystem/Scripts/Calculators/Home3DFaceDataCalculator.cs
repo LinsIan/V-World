@@ -13,11 +13,11 @@ using LiveSystem.Data;
 
 namespace LiveSystem
 {
-    public class Home3DFaceDataCalculater : FaceDataCalculater
+    public class Home3DFaceDataCalculator : FaceDataCalculater
     {
         protected Vector2 leftIris = Vector2.zero;
         
-        public Home3DFaceDataCalculater(FaceLandmarkKeyPoints points) : base(points)
+        public Home3DFaceDataCalculator(FaceLandmarkKeyPoints points) : base(points)
         {
         }
 

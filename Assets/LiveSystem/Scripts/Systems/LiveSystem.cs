@@ -18,7 +18,7 @@ namespace LiveSystem
         [SerializeField] protected ModelData modelData;
         [SerializeField] protected FaceLandmarkKeyPoints keyPoints;
         protected ModelController modelController;
-        protected List<Calculater> calculaters = new List<Calculater>();
+        protected List<Calculator> calculaters = new List<Calculator>();
 
         protected virtual IEnumerator Start()
         {
