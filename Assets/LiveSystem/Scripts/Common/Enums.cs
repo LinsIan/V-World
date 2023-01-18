@@ -1,8 +1,9 @@
-// Copyright (c) 2021 Lins Ian
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file
-
+/**
+ * Copyright (c) 2023 LinsIan
+ * 
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file or at https://opensource.org/licenses/MIT.
+ */
 
 namespace LiveSystem
 {
