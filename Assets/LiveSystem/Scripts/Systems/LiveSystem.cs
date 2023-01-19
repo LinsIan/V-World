@@ -15,6 +15,11 @@ namespace LiveSystem
 {
     public abstract class LiveSystem : MonoBehaviour
     {
+        // 這裡應該改成注入live mode的工廠，然後根據切換模式的時候可以去拿到對應的initializer
+        // 再由這個initializer去創建solution、modelController、calculaters
+        // 注入：modeldata facelandmarkkeypoints factory
+        // 透過工廠生成：solution
+
         [SerializeField] protected Solution solution;
         [SerializeField] protected ModelData modelData;
         [SerializeField] protected FaceLandmarkKeyPoints keyPoints;
