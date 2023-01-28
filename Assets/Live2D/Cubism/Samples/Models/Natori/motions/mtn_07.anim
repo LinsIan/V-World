@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mtn_07.anim
+  m_Name: mtn_07
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -8939,5 +8939,5 @@ AnimationClip:
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 41614
+    intParameter: 19216
     messageOptions: 1
