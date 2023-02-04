@@ -14,7 +14,7 @@ namespace LiveSystem
         // 物件的類型
         public Type Type { get; set; }
         // 該物件的生成方式
-        public Func<object> Factory { get; set; }
+        public DependencyFactory.Delegate Factory { get; set; }
         // 是否為單例
         public bool IsSingleton { get; set; }
     }

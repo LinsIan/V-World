@@ -17,17 +17,16 @@ namespace LiveSystem
 
     public abstract class ModelController
     {
+        [InjectField] protected ModelData modelData;
+
         protected readonly float SensitivityConstant = 0.5f;
-        protected ModelData modelData;
         protected GameObject modelObj;
         protected AssetReferenceGameObject modelRef;
         protected LiveMode liveMode;
         protected bool isPause = true;
 
-        public ModelController(ModelData data, LiveMode mode = LiveMode.FaceOnly)
+        public ModelController()
         {
-            modelData = data;
-            liveMode = mode;
         }
 
         public virtual IEnumerator Init()

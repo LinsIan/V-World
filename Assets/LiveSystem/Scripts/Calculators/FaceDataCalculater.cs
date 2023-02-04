@@ -19,7 +19,8 @@ namespace LiveSystem
     {
         public Action<FaceData> OnFaceDataOutput { get; set; }
 
-        protected FaceLandmarkKeyPoints keyPoints;
+        [InjectField] protected FaceLandmarkKeyPoints keyPoints;
+        
         protected readonly List<ScalarKalmanFilter> filters;
         protected readonly float landmarkScale = 100;
         protected readonly float BodyRate = 3;
@@ -27,12 +28,10 @@ namespace LiveSystem
         protected readonly float WinkEyeDistance = 0.3f;
         protected readonly float MouthOpenConstanst = 0.4f;
 
-        public FaceDataCalculater(FaceLandmarkKeyPoints points)
+        public FaceDataCalculater()
         {
-            keyPoints = points;
             filters = new List<ScalarKalmanFilter>();
-            //for (int i = 0; i < points.FaceDirectionPoints.Count; i++)
-            for (int i = 0; i < points.AllPoints.Count; i++)
+            for (int i = 0; i < keyPoints.AllPoints.Count; i++)
             {
                 filters.Add(new ScalarKalmanFilter());
             }

@@ -42,13 +42,13 @@ namespace LiveSystem
             {
                 if (!singletons.ContainsKey(type))
                 {
-                    singletons.Add(type, dependency.Factory());
+                    singletons.Add(type, dependency.Factory(this));
                 }
                 return singletons[type];
             }
             
             //不是單例則生成新的實例
-            return dependency.Factory();
+            return dependency.Factory(this);
         }
         
         public T Get<T>()

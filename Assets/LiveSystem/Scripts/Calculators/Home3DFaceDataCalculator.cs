@@ -19,7 +19,7 @@ namespace LiveSystem
     {
         protected Vector2 leftIris = Vector2.zero;
         
-        public Home3DFaceDataCalculator(FaceLandmarkKeyPoints points) : base(points)
+        public Home3DFaceDataCalculator()
         {
         }
 

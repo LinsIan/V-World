@@ -14,21 +14,21 @@ namespace LiveSystem
 {
     public class Hom3DLiveSystem : LiveSystem
     {
+        [InjectField] private HolisticTrackingGraph graph;
+        [InjectField] private Home3DFaceDataCalculator faceDataCalculater;
+
         protected override IEnumerator InitSubSystem()
         {
-            var newModelController = new Home3DModelController(modelData, LiveMode.FaceOnly);
-            var graph = solution?.GetComponent<HolisticTrackingGraph>();
-            var faceDataCalculater = new Home3DFaceDataCalculator(keyPoints);
-            //lefthand、righthand
-            //pose (world?)
-
+            calculaters.Add(faceDataCalculater);
             graph.OnFaceLandmarksOutput += faceDataCalculater.OnLandmarksOutput;
             // graph.OnLeftIrisLandmarksOutput += (faceDataCalculater.OnLeftIrisLandmarksOutput);
             // graph.OnRightHandLandmarksOutput += faceDataCalculater.OnRightIrisLandmarksOutput;
-            faceDataCalculater.OnFaceDataOutput += newModelController.OnFaceDataOutput;
-            calculaters.Add(faceDataCalculater);
-            modelController = newModelController;
             
+            if (modelController is Home3DModelController controller)
+            {
+                faceDataCalculater.OnFaceDataOutput += controller.OnFaceDataOutput;
+            }
+
             yield return base.InitSubSystem();
         }
     }

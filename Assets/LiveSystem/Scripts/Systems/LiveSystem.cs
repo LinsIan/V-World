@@ -15,15 +15,13 @@ namespace LiveSystem
 {
     public abstract class LiveSystem : MonoBehaviour
     {
-        // 這裡應該改成注入live mode的工廠，然後根據切換模式的時候可以去拿到對應的initializer
-        // 再由這個initializer去創建solution、modelController、calculaters
-        // 注入：modeldata facelandmarkkeypoints factory
-        // 透過工廠生成：solution
+        // 由子類別去聲明需要注入的calculater、modelController、graph，和定義要怎麼Init
+        // calculator和modelcontroller需要去聲明需要注入的資料(modelData、keypoints)，這樣liveSystem就不需要持有這些資料的類別
+        // 由組合根去抓graph然後註冊
+        [InjectField] protected Solution solution;
+        [InjectField] protected ModelData modelData;
+        [InjectField] protected ModelController modelController;
 
-        [SerializeField] protected Solution solution;
-        [SerializeField] protected ModelData modelData;
-        [SerializeField] protected FaceLandmarkKeyPoints keyPoints;
-        protected ModelController modelController;
         protected List<Calculator> calculaters = new List<Calculator>();
 
         protected virtual IEnumerator Start()

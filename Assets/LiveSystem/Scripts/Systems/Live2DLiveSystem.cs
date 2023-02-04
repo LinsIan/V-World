@@ -16,16 +16,18 @@ namespace LiveSystem
 {
     public class Live2DLiveSystem : LiveSystem
     {
+        [InjectField] private IrisTrackingGraph graph;
+        [InjectField] private Live2DFaceDataCalculator faceDataCalculator;
+
         protected override IEnumerator InitSubSystem()
         {
-            var newModelController = new Live2DModelController(modelData);
-            var graph = solution?.GetComponent<IrisTrackingGraph>();
-            var faceDataCalculater = new Live2DFaceDataCalculator(keyPoints);
+            calculaters.Add(faceDataCalculator);
+            graph.OnFaceLandmarksWithIrisOutput += faceDataCalculator.OnLandmarksOutput;
 
-            graph.OnFaceLandmarksWithIrisOutput += faceDataCalculater.OnLandmarksOutput;
-            faceDataCalculater.OnFaceDataOutput += newModelController.OnFaceDataOutput;
-            calculaters.Add(faceDataCalculater);
-            modelController = newModelController;
+            if (modelController is Live2DModelController controller)
+            {
+                faceDataCalculator.OnFaceDataOutput += controller.OnFaceDataOutput;
+            }
 
             yield return base.InitSubSystem();
         }

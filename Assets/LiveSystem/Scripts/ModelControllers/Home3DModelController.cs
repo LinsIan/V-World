@@ -18,7 +18,7 @@ namespace LiveSystem
         protected Home3DModel model;
         protected FaceData calibrationFaceData = default;
 
-        public Home3DModelController(ModelData data, LiveMode mode) : base(data, mode)
+        public Home3DModelController()
         {
         }
 

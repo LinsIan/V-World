@@ -66,7 +66,13 @@ namespace LiveSystem
             };
         }
 
+        public static Delegate FromNoInjectionObject<T>(T instance) where T : UnityEngine.Object
+        {
+            return (dependencies) => instance;
+        }
+
         // TODO:FromAddressables
+        // TODO:FromScriptableObject
     }
 }
 

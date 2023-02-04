@@ -24,7 +24,7 @@ namespace LiveSystem
         protected FaceData calibrationFaceData;
         protected Interpolator<FaceData> interpolator;
         
-        public Live2DModelController(ModelData data) : base(data)
+        public Live2DModelController()
         {
         }
 

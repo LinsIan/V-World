@@ -12,7 +12,7 @@ namespace LiveSystem
 {
     public class Live2DFaceDataCalculator : FaceDataCalculater
     {
-        public Live2DFaceDataCalculator(FaceLandmarkKeyPoints points) : base(points)
+        public Live2DFaceDataCalculator()
         {
         }
 
