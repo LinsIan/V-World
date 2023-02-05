@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using LiveSystem.Data;
+using Cysharp.Threading.Tasks;
 
 namespace LiveSystem
 {
@@ -29,14 +30,14 @@ namespace LiveSystem
         {
         }
 
-        public virtual IEnumerator Init()
+        public virtual async UniTask Init()
         {
             isPause = true;
             if (modelObj != null)
             {
                 ReleaseModel();
             }
-            yield return InstantiateModel();
+            modelObj = await InstantiateModel();
         }
 
         public virtual void UpdateModel()
@@ -51,24 +52,23 @@ namespace LiveSystem
         {
         }
 
-        public IEnumerator SetModelData(ModelData newData)
+        public async UniTask SetModelData(ModelData newData)
         {
             modelData = newData;
-            yield return Init();
+            await Init();
         }
 
-        public IEnumerator ChangeModel(int index)
+        public async UniTask ChangeModel(int index)
         {
             modelData.CurrentAsset = index;
-            yield return Init();
+            await Init();
         }
 
-        protected IEnumerator InstantiateModel()
+        protected async UniTask<GameObject> InstantiateModel()
         {
             modelRef = modelData.Assets[modelData.CurrentAsset].PrefabRef;
-            var handle = modelRef.InstantiateAsync();
-            yield return handle;
-            modelObj = handle.Result;
+            var handle = await modelRef.InstantiateAsync();
+            return handle;
         }
 
         protected void ReleaseModel()

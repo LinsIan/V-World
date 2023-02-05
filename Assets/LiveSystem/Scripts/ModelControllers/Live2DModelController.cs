@@ -12,6 +12,7 @@ using UnityEngine;
 using LiveSystem.Data;
 using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework.HarmonicMotion;
+using Cysharp.Threading.Tasks;
 
 namespace LiveSystem
 {
@@ -28,9 +29,9 @@ namespace LiveSystem
         {
         }
 
-        public override IEnumerator Init()
+        public override async UniTask Init()
         {
-            yield return base.Init();
+            await base.Init();
             interpolator = new Interpolator<FaceData>(FaceData.Lerp);
             cubismModel = modelObj.GetComponent<CubismModel>();
             motionController = modelObj.GetComponent<CubismHarmonicMotionController>();

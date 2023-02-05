@@ -8,6 +8,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 using Mediapipe.Unity.Holistic;
 
 namespace LiveSystem
@@ -17,7 +18,7 @@ namespace LiveSystem
         [InjectField] private HolisticTrackingGraph graph;
         [InjectField] private Home3DFaceDataCalculator faceDataCalculater;
 
-        protected override IEnumerator InitSubSystem()
+        protected override async UniTask InitSubSystem()
         {
             calculaters.Add(faceDataCalculater);
             graph.OnFaceLandmarksOutput += faceDataCalculater.OnLandmarksOutput;
@@ -29,7 +30,7 @@ namespace LiveSystem
                 faceDataCalculater.OnFaceDataOutput += controller.OnFaceDataOutput;
             }
 
-            yield return base.InitSubSystem();
+            await base.InitSubSystem();
         }
     }
 }

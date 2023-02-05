@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LiveSystem.Data;
+using Cysharp.Threading.Tasks;
 
 namespace LiveSystem
 {
@@ -22,9 +23,9 @@ namespace LiveSystem
         {
         }
 
-        public override IEnumerator Init()
+        public override async UniTask Init()
         {
-            yield return base.Init();   
+            await base.Init();   
             faceDataInterpolator = new Interpolator<FaceData>(FaceData.Lerp);
             model = modelObj.GetComponent<Home3DModel>();
             isPause = false;

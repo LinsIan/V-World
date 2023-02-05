@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mediapipe.Unity;
+using Cysharp.Threading.Tasks;
 
 namespace LiveSystem
 {
@@ -24,9 +25,11 @@ namespace LiveSystem
 
         protected List<Calculator> calculaters = new List<Calculator>();
 
-        protected virtual IEnumerator Start()
+        protected virtual async void Start()
         {
-            yield return InitSubSystem();
+            enabled = false;
+            await InitSubSystem();
+            enabled = true;
         }
 
         protected virtual void Pause()
@@ -43,20 +46,20 @@ namespace LiveSystem
             modelController.UpdateModel();
         }
 
-        protected virtual IEnumerator InitSubSystem()
+        protected virtual async UniTask InitSubSystem()
         {
-            yield return modelController.Init();
+            await modelController.Init();
         }
 
-        public IEnumerator SetModelData(ModelData newData, Action callback = null)
+        public async void SetModelData(ModelData newData, Action callback = null)
         {
-            yield return modelController.SetModelData(newData);
+            await modelController.SetModelData(newData);
             callback?.Invoke();
         }
 
-        public IEnumerator ChangeModel(int index, Action callback = null)
+        public async void ChangeModel(int index, Action callback = null)
         {
-            yield return modelController.ChangeModel(index);
+            await modelController.ChangeModel(index);
             callback?.Invoke();
         }
 

@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Mediapipe.Unity.IrisTracking;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 
 namespace LiveSystem
 {
@@ -19,7 +20,7 @@ namespace LiveSystem
         [InjectField] private IrisTrackingGraph graph;
         [InjectField] private Live2DFaceDataCalculator faceDataCalculator;
 
-        protected override IEnumerator InitSubSystem()
+        protected override async UniTask InitSubSystem()
         {
             calculaters.Add(faceDataCalculator);
             graph.OnFaceLandmarksWithIrisOutput += faceDataCalculator.OnLandmarksOutput;
@@ -29,7 +30,7 @@ namespace LiveSystem
                 faceDataCalculator.OnFaceDataOutput += controller.OnFaceDataOutput;
             }
 
-            yield return base.InitSubSystem();
+            await base.InitSubSystem();
         }
     }
 }

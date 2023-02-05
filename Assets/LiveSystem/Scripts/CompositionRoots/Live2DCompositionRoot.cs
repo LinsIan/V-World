@@ -25,7 +25,8 @@ namespace LiveSystem
             dependenciesCollection.Add(new Dependency { Type = typeof(FaceLandmarkKeyPoints), Factory = DependencyFactory.FromNoInjectionObject(keyPoints), IsSingleton = true });
             dependenciesCollection.Add(new Dependency { Type = typeof(ModelData), Factory = DependencyFactory.FromNoInjectionObject(modelData), IsSingleton = true });
             
-            dependenciesCollection.Add(new Dependency { Type = typeof(IrisTrackingGraph), Factory = DependencyFactory.FromGameObject(solution.GetComponent<IrisTrackingGraph>()), IsSingleton = true });
+            var graph = solution.GetComponent<IrisTrackingGraph>();
+            dependenciesCollection.Add(new Dependency { Type = typeof(IrisTrackingGraph), Factory = DependencyFactory.FromGameObject(graph), IsSingleton = true });
             
             dependenciesCollection.Add(new Dependency { Type = typeof(Live2DFaceDataCalculator), Factory = DependencyFactory.FromClass<Live2DFaceDataCalculator>(), IsSingleton = true });
             dependenciesCollection.Add(new Dependency { Type = typeof(ModelController), Factory = DependencyFactory.FromClass<Live2DModelController>(), IsSingleton = true });
@@ -33,8 +34,6 @@ namespace LiveSystem
 
         protected override void Configure()
         {
-            //注入system
-            throw new System.NotImplementedException();
         }
     }
     
