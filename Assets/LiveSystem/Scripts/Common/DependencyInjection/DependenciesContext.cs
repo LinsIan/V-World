@@ -15,7 +15,7 @@ namespace LiveSystem
     public abstract class DependenciesContext : MonoBehaviour
     {
         protected DependenciesCollection dependenciesCollection = new DependenciesCollection();
-        private DependenciesProvider dependenciesProvider;
+        protected DependenciesProvider dependenciesProvider;
 
         private void Awake() {
             DontDestroyOnLoad(gameObject);

@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Mediapipe.Unity;
 using Mediapipe.Unity.IrisTracking;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -23,6 +24,9 @@ namespace LiveSystem
         protected override async UniTask InitSubSystem()
         {
             calculaters.Add(faceDataCalculator);
+
+            await UniTask.WaitForEndOfFrame(graph);
+
             graph.OnFaceLandmarksWithIrisOutput += faceDataCalculator.OnLandmarksOutput;
 
             if (modelController is Live2DModelController controller)

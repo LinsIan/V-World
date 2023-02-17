@@ -18,6 +18,7 @@ namespace LiveSystem
         [SerializeField] Solution solution;
         [SerializeField] FaceLandmarkKeyPoints keyPoints;
         [SerializeField] ModelData modelData;
+        [SerializeField] LiveSystem liveSystem;
 
         protected override void Setup()
         {
@@ -34,6 +35,7 @@ namespace LiveSystem
 
         protected override void Configure()
         {
+            dependenciesProvider.Inject(liveSystem);
         }
     }
     

@@ -14,6 +14,7 @@ using Cysharp.Threading.Tasks;
 
 namespace LiveSystem
 {
+    [DefaultExecutionOrder(2)]
     public abstract class LiveSystem : MonoBehaviour
     {
         // 由子類別去聲明需要注入的calculater、modelController、graph，和定義要怎麼Init
