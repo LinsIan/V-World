@@ -105,6 +105,8 @@ namespace LiveSystem
 
         public void SetMotionRate()
         {
+            if (motionController == null) return;
+            
             for (int i = 0; i < modelData.MotionRates.Count; i++)
             {
                 motionController.ChannelTimescales[i] = modelData.MotionRates[i].Value;

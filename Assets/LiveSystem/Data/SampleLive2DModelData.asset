@@ -17,37 +17,7 @@ MonoBehaviour:
   <ModelType>k__BackingField: 0
   <Assets>k__BackingField:
   - <PrefabRef>k__BackingField:
-      m_AssetGUID: 76219ccafebfb40209e451274f3fb964
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    <SpriteRef>k__BackingField:
-      m_AssetGUID: 
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-  - <PrefabRef>k__BackingField:
-      m_AssetGUID: 851e5890c6aa6463db75e334933c6f8b
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    <SpriteRef>k__BackingField:
-      m_AssetGUID: 
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-  - <PrefabRef>k__BackingField:
-      m_AssetGUID: 1614291e826934f3f9d6e5ddb266baa7
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    <SpriteRef>k__BackingField:
-      m_AssetGUID: 
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-  - <PrefabRef>k__BackingField:
-      m_AssetGUID: f8a0cde8a23504c69aed1f93286955b7
+      m_AssetGUID: ce41ceed0488ae64e9390a6711fdcbd5
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: a1691bf439feb2b4aa678c89a22a5eeb
+  m_SerializeEntries:
+  - m_GUID: e81ebdb1f4262bc4f9d45f5d6d4cb822
+    m_Address: Assets/LiveSystem/Models/Live2D/Mao.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ce41ceed0488ae64e9390a6711fdcbd5
+    m_Address: Assets/LiveSystem/Models/Live2D/haru/runtime/haru_greeter_t03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: bf49162a66f7af54a9082add93ca6005, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 53c850292f84bdc47bb33a6b836a0d46, type: 2}
+    - {fileID: 11400000, guid: 20cf786b9d61d504c803582b41858e76, type: 2}
