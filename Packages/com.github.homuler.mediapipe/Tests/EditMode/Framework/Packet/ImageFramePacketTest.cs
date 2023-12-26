@@ -16,12 +16,11 @@ namespace Mediapipe.Tests
     {
       using (var packet = new ImageFramePacket())
       {
-        using (var statusOrImageFrame = packet.Consume())
-        {
-          Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
-          Assert.AreEqual(Status.StatusCode.Internal, statusOrImageFrame.status.Code());
-          Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
-        }
+        var exception = Assert.Throws<BadStatusException>(packet.ValidateAsType);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
+        exception = Assert.Throws<BadStatusException>(() => { _ = packet.Consume(); });
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
@@ -33,18 +32,11 @@ namespace Mediapipe.Tests
       using (var packet = new ImageFramePacket(srcImageFrame))
       {
         Assert.True(srcImageFrame.isDisposed);
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
 
-        using (var statusOrImageFrame = packet.Consume())
-        {
-          Assert.True(statusOrImageFrame.Ok());
-
-          using (var imageFrame = statusOrImageFrame.Value())
-          {
-            Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
-          }
-        }
+        var imageFrame = packet.Consume();
+        Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
       }
     }
 
@@ -58,18 +50,11 @@ namespace Mediapipe.Tests
         using (var packet = new ImageFramePacket(srcImageFrame, timestamp))
         {
           Assert.True(srcImageFrame.isDisposed);
-          Assert.True(packet.ValidateAsType().Ok());
+          Assert.DoesNotThrow(packet.ValidateAsType);
 
-          using (var statusOrImageFrame = packet.Consume())
-          {
-            Assert.True(statusOrImageFrame.Ok());
-
-            using (var imageFrame = statusOrImageFrame.Value())
-            {
-              Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
-              Assert.AreEqual(timestamp, packet.Timestamp());
-            }
-          }
+          var imageFrame = packet.Consume();
+          Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
+          Assert.AreEqual(timestamp, packet.Timestamp());
         }
       }
     }
@@ -129,6 +114,7 @@ namespace Mediapipe.Tests
       }
     }
 
+    [Test]
     public void Get_ShouldReturnImageFrame_When_DataIsNotEmpty()
     {
       using (var packet = new ImageFramePacket(new ImageFrame(ImageFormat.Types.Format.Sbgra, 10, 10)))
@@ -149,28 +135,21 @@ namespace Mediapipe.Tests
     {
       using (var packet = new ImageFramePacket(new ImageFrame(ImageFormat.Types.Format.Sbgra, 10, 10)))
       {
-        using (var statusOrImageFrame = packet.Consume())
-        {
-          Assert.True(statusOrImageFrame.Ok());
-
-          using (var imageFrame = statusOrImageFrame.Value())
-          {
-            Assert.AreEqual(ImageFormat.Types.Format.Sbgra, imageFrame.Format());
-            Assert.AreEqual(10, imageFrame.Width());
-            Assert.AreEqual(10, imageFrame.Height());
-          }
-        }
+        var imageFrame = packet.Consume();
+        Assert.AreEqual(ImageFormat.Types.Format.Sbgra, imageFrame.Format());
+        Assert.AreEqual(10, imageFrame.Width());
+        Assert.AreEqual(10, imageFrame.Height());
       }
     }
     #endregion
 
     #region #ValidateAsType
     [Test]
-    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
+    public void ValidateAsType_ShouldNotThrow_When_ValueIsSet()
     {
       using (var packet = new ImageFramePacket(new ImageFrame()))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
       }
     }
     #endregion

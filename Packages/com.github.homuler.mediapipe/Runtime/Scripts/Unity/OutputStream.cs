@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
-using System.Collections.Generic;
 
 namespace Mediapipe.Unity
 {
@@ -111,38 +110,25 @@ namespace Mediapipe.Unity
       this.presenceStreamName = presenceStreamName;
     }
 
-    public Status StartPolling()
+    public void StartPolling()
     {
       _outputPacket = new TPacket();
-
-      var statusOrPoller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
-      var status = statusOrPoller.status;
-      if (status.Ok())
-      {
-        _poller = statusOrPoller.Value();
-      }
+      _poller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
 
       if (presenceStreamName == null)
       {
-        return status;
+        return;
       }
 
       _presencePacket = new BoolPacket();
-
-      var statusOrPresencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName, false);
-      status = statusOrPresencePoller.status;
-      if (status.Ok())
-      {
-        _presencePoller = statusOrPresencePoller.Value();
-      }
-      return status;
+      _presencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName, false);
     }
 
     public void AddListener(EventHandler<OutputEventArgs<TValue>> callback)
     {
       if (OnReceived == null)
       {
-        calculatorGraph.ObserveOutputStream(streamName, _id, InvokeIfOutputStreamFound, observeTimestampBounds).AssertOk();
+        calculatorGraph.ObserveOutputStream(streamName, _id, InvokeIfOutputStreamFound, observeTimestampBounds);
       }
       OnReceived += callback;
     }
@@ -259,9 +245,15 @@ namespace Mediapipe.Unity
       }
 
       _lastTimestampMicrosec = timestampMicrosec;
-      var statusOrValue = _outputPacket.Consume();
 
-      value = statusOrValue.ValueOr();
+      try
+      {
+        value = _outputPacket.Consume();
+      }
+      catch
+      {
+        value = default;
+      }
       return true;
     }
 
@@ -364,9 +356,15 @@ namespace Mediapipe.Unity
         if (!packet.IsEmpty())
         {
           _lastTimestampMicrosec = currentMicrosec;
-          var statusOrValue = packet.Consume();
 
-          value = statusOrValue.ValueOr();
+          try
+          {
+            value = packet.Consume();
+          }
+          catch
+          {
+            value = default;
+          }
           return true;
         }
 
@@ -382,18 +380,18 @@ namespace Mediapipe.Unity
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    protected static Status.StatusArgs InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
+    protected static StatusArgs InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       try
       {
         var isFound = _InstanceTable.TryGetValue(streamId, out var outputStream);
         if (!isFound)
         {
-          return Status.StatusArgs.NotFound($"OutputStream with id {streamId} is not found, maybe already GCed");
+          return StatusArgs.NotFound($"OutputStream with id {streamId} is not found, maybe already GCed");
         }
         if (outputStream.calculatorGraph.mpPtr != graphPtr)
         {
-          return Status.StatusArgs.InvalidArgument($"OutputStream is found, but is not linked to the specified CalclatorGraph");
+          return StatusArgs.InvalidArgument($"OutputStream is found, but is not linked to the specified CalclatorGraph");
         }
 
         outputStream.referencePacket.SwitchNativePtr(packetPtr);
@@ -403,11 +401,11 @@ namespace Mediapipe.Unity
         }
         outputStream.referencePacket.ReleaseMpResource();
 
-        return Status.StatusArgs.Ok();
+        return StatusArgs.Ok();
       }
       catch (Exception e)
       {
-        return Status.StatusArgs.Internal(e.ToString());
+        return StatusArgs.Internal(e.ToString());
       }
     }
   }

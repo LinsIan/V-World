@@ -6,8 +6,9 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace Mediapipe.Unity.HairSegmentation
+namespace Mediapipe.Unity.Sample.HairSegmentation
 {
   public class HairSegmentationGraph : GraphRunner
   {
@@ -29,7 +30,7 @@ namespace Mediapipe.Unity.HairSegmentation
     {
       if (runningMode.IsSynchronous())
       {
-        _hairMaskStream.StartPolling().AssertOk();
+        _hairMaskStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -59,7 +60,7 @@ namespace Mediapipe.Unity.HairSegmentation
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -69,12 +70,12 @@ namespace Mediapipe.Unity.HairSegmentation
       {
         _hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _HairMaskStreamName, true, timeoutMicrosec);
       }
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
 
@@ -96,7 +97,7 @@ namespace Mediapipe.Unity.HairSegmentation
       sidePacket.Emplace("output_horizontally_flipped", new BoolPacket(outputHorizontallyFlipped));
       sidePacket.Emplace("output_vertically_flipped", new BoolPacket(outputVerticallyFlipped));
 
-      Logger.LogDebug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
+      Debug.Log($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
       return sidePacket;
     }
   }

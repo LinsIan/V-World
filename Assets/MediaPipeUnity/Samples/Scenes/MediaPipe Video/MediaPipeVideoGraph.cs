@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Mediapipe.Unity.MediaPipeVideo
+namespace Mediapipe.Unity.Sample.MediaPipeVideo
 {
   public class MediaPipeVideoGraph : GraphRunner
   {
@@ -34,7 +34,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
     {
       if (configType != ConfigType.OpenGLES)
       {
-        _outputVideoStream.StartPolling().AssertOk();
+        _outputVideoStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -76,7 +76,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
       return TryGetNext(_outputVideoStream, out outputVideo, allowBlock, GetCurrentTimestampMicrosec());
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (configType == ConfigType.OpenGLES)
       {
@@ -96,7 +96,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
         _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, true, timeoutMicrosec);
       }
 
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -109,9 +109,9 @@ namespace Mediapipe.Unity.MediaPipeVideo
       };
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource, true);
       sidePacket.Emplace("output_rotation", new IntPacket((int)imageSource.rotation));

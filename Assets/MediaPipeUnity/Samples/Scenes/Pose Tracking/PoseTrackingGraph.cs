@@ -11,7 +11,7 @@ using UnityEngine;
 
 using Google.Protobuf;
 
-namespace Mediapipe.Unity.PoseTracking
+namespace Mediapipe.Unity.Sample.PoseTracking
 {
   public class PoseTrackingGraph : GraphRunner
   {
@@ -88,11 +88,11 @@ namespace Mediapipe.Unity.PoseTracking
     {
       if (runningMode.IsSynchronous())
       {
-        _poseDetectionStream.StartPolling().AssertOk();
-        _poseLandmarksStream.StartPolling().AssertOk();
-        _poseWorldLandmarksStream.StartPolling().AssertOk();
-        _segmentationMaskStream.StartPolling().AssertOk();
-        _roiFromLandmarksStream.StartPolling().AssertOk();
+        _poseDetectionStream.StartPolling();
+        _poseLandmarksStream.StartPolling();
+        _poseWorldLandmarksStream.StartPolling();
+        _segmentationMaskStream.StartPolling();
+        _roiFromLandmarksStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -137,7 +137,7 @@ namespace Mediapipe.Unity.PoseTracking
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -163,9 +163,7 @@ namespace Mediapipe.Unity.PoseTracking
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())
       {
-        var status = validatedGraphConfig.Initialize(config);
-
-        if (!status.Ok()) { return status; }
+        validatedGraphConfig.Initialize(config);
 
         var extensionRegistry = new ExtensionRegistry() { TensorsToDetectionsCalculatorOptions.Extensions.Ext, ThresholdingCalculatorOptions.Extensions.Ext };
         var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
@@ -178,7 +176,7 @@ namespace Mediapipe.Unity.PoseTracking
           {
             var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
             options.MinScoreThresh = minDetectionConfidence;
-            Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
+            Debug.Log($"Min Detection Confidence = {minDetectionConfidence}");
           }
         }
 
@@ -188,10 +186,10 @@ namespace Mediapipe.Unity.PoseTracking
           {
             var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
             options.Threshold = minTrackingConfidence;
-            Logger.LogInfo(TAG, $"Min Tracking Confidence = {minTrackingConfidence}");
+            Debug.Log($"Min Tracking Confidence = {minTrackingConfidence}");
           }
         }
-        return calculatorGraph.Initialize(cannonicalizedConfig);
+        calculatorGraph.Initialize(cannonicalizedConfig);
       }
     }
 
@@ -206,9 +204,9 @@ namespace Mediapipe.Unity.PoseTracking
       }
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
 
@@ -230,17 +228,17 @@ namespace Mediapipe.Unity.PoseTracking
       sidePacket.Emplace("output_horizontally_flipped", new BoolPacket(outputHorizontallyFlipped));
       sidePacket.Emplace("output_vertically_flipped", new BoolPacket(outputVerticallyFlipped));
 
-      Logger.LogDebug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
+      Debug.Log($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
 
       sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
       sidePacket.Emplace("smooth_landmarks", new BoolPacket(smoothLandmarks));
       sidePacket.Emplace("enable_segmentation", new BoolPacket(enableSegmentation));
       sidePacket.Emplace("smooth_segmentation", new BoolPacket(smoothSegmentation));
 
-      Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
-      Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
-      Logger.LogInfo(TAG, $"Enable Segmentation = {enableSegmentation}");
-      Logger.LogInfo(TAG, $"Smooth Segmentation = {smoothSegmentation}");
+      Debug.Log($"Model Complexity = {modelComplexity}");
+      Debug.Log($"Smooth Landmarks = {smoothLandmarks}");
+      Debug.Log($"Enable Segmentation = {enableSegmentation}");
+      Debug.Log($"Smooth Segmentation = {smoothSegmentation}");
 
       return sidePacket;
     }

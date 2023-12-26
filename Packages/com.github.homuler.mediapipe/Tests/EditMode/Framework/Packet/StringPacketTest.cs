@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using NUnit.Framework;
-using System.Text.RegularExpressions;
 
 namespace Mediapipe.Tests
 {
@@ -17,11 +16,10 @@ namespace Mediapipe.Tests
     {
       using (var packet = new StringPacket())
       {
-#pragma warning disable IDE0058
-        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
-        Assert.Throws<MediaPipeException>(() => { packet.Get(); });
+        var exception = Assert.Throws<BadStatusException>(packet.ValidateAsType);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
+        _ = Assert.Throws<MediaPipeException>(() => { _ = packet.Get(); });
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
-#pragma warning restore IDE0058
       }
     }
 
@@ -30,7 +28,7 @@ namespace Mediapipe.Tests
     {
       using (var packet = new StringPacket("test"))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual("test", packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -42,7 +40,7 @@ namespace Mediapipe.Tests
       var bytes = new byte[] { (byte)'t', (byte)'e', (byte)'s', (byte)'t' };
       using (var packet = new StringPacket(bytes))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual("test", packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -55,7 +53,7 @@ namespace Mediapipe.Tests
       {
         using (var packet = new StringPacket("test", timestamp))
         {
-          Assert.True(packet.ValidateAsType().Ok());
+          Assert.DoesNotThrow(packet.ValidateAsType);
           Assert.AreEqual("test", packet.Get());
           Assert.AreEqual(timestamp, packet.Timestamp());
         }
@@ -70,7 +68,7 @@ namespace Mediapipe.Tests
       {
         using (var packet = new StringPacket(bytes, timestamp))
         {
-          Assert.True(packet.ValidateAsType().Ok());
+          Assert.DoesNotThrow(packet.ValidateAsType);
           Assert.AreEqual("test", packet.Get());
           Assert.AreEqual(timestamp, packet.Timestamp());
         }
@@ -136,28 +134,22 @@ namespace Mediapipe.Tests
 
     #region #Consume
     [Test]
-    public void Consume_ShouldReturnStatusOrString_When_PacketIsEmpty()
+    public void Consume_ShouldThrowBadStatusException_When_PacketIsEmpty()
     {
       using (var packet = new StringPacket())
       {
-        using (var statusOrString = packet.Consume())
-        {
-          Assert.False(statusOrString.Ok());
-          Assert.AreEqual(Status.StatusCode.Internal, statusOrString.status.Code());
-        }
+        var exception = Assert.Throws<BadStatusException>(() => { _ = packet.Consume(); });
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
       }
     }
 
     [Test]
-    public void Consume_ShouldReturnStatusOrString_When_PacketIsNotEmpty()
+    public void Consume_ShouldReturnString_When_PacketIsNotEmpty()
     {
       using (var packet = new StringPacket("abc"))
       {
-        using (var statusOrString = packet.Consume())
-        {
-          Assert.True(statusOrString.Ok());
-          Assert.AreEqual("abc", statusOrString.Value());
-        }
+        var str = packet.Consume();
+        Assert.AreEqual("abc", str);
         Assert.True(packet.IsEmpty());
       }
     }
@@ -165,11 +157,11 @@ namespace Mediapipe.Tests
 
     #region #ValidateAsType
     [Test]
-    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
+    public void ValidateAsType_ShouldNotThrow_When_ValueIsSet()
     {
       using (var packet = new StringPacket("test"))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
       }
     }
     #endregion

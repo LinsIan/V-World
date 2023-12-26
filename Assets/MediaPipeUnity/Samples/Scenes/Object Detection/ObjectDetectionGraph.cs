@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mediapipe.Unity.ObjectDetection
+namespace Mediapipe.Unity.Sample.ObjectDetection
 {
   public class ObjectDetectionGraph : GraphRunner
   {
@@ -26,7 +26,7 @@ namespace Mediapipe.Unity.ObjectDetection
     {
       if (runningMode.IsSynchronous())
       {
-        _outputDetectionsStream.StartPolling().AssertOk();
+        _outputDetectionsStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -56,7 +56,7 @@ namespace Mediapipe.Unity.ObjectDetection
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -67,12 +67,12 @@ namespace Mediapipe.Unity.ObjectDetection
       {
         _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, true, timeoutMicrosec);
       }
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
       SetImageTransformationOptions(sidePacket, imageSource);
       return sidePacket;
     }

@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mediapipe.Unity.IrisTracking
+namespace Mediapipe.Unity.Sample.IrisTracking
 {
   public class IrisTrackingGraph : GraphRunner
   {
@@ -43,9 +43,9 @@ namespace Mediapipe.Unity.IrisTracking
     {
       if (runningMode.IsSynchronous())
       {
-        _faceDetectionsStream.StartPolling().AssertOk();
-        _faceRectStream.StartPolling().AssertOk();
-        _faceLandmarksWithIrisStream.StartPolling().AssertOk();
+        _faceDetectionsStream.StartPolling();
+        _faceRectStream.StartPolling();
+        _faceLandmarksWithIrisStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -85,7 +85,7 @@ namespace Mediapipe.Unity.IrisTracking
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -102,12 +102,12 @@ namespace Mediapipe.Unity.IrisTracking
         _faceRectStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _FaceRectStreamName, true, timeoutMicrosec);
         _faceLandmarksWithIrisStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksWithIrisStreamName, true, timeoutMicrosec);
       }
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
       SetImageTransformationOptions(sidePacket, imageSource);
       return sidePacket;
     }

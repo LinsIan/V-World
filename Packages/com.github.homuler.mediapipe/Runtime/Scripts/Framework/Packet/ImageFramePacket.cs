@@ -48,20 +48,21 @@ namespace Mediapipe
       return new ImageFrame(imageFramePtr, false);
     }
 
-    public override StatusOr<ImageFrame> Consume()
+    public override ImageFrame Consume()
     {
-      UnsafeNativeMethods.mp_Packet__ConsumeImageFrame(mpPtr, out var statusOrImageFramePtr).Assert();
+      UnsafeNativeMethods.mp_Packet__ConsumeImageFrame(mpPtr, out var statusPtr, out var imageFramePtr).Assert();
 
       GC.KeepAlive(this);
-      return new StatusOrImageFrame(statusOrImageFramePtr);
+      AssertStatusOk(statusPtr);
+      return new ImageFrame(imageFramePtr, true);
     }
 
-    public override Status ValidateAsType()
+    public override void ValidateAsType()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsImageFrame(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
   }
 }

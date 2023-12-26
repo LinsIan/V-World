@@ -44,17 +44,17 @@ namespace Mediapipe
       return value;
     }
 
-    public override StatusOr<int> Consume()
+    public override int Consume()
     {
       throw new NotSupportedException();
     }
 
-    public override Status ValidateAsType()
+    public override void ValidateAsType()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsInt(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
   }
 }

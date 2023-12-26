@@ -11,7 +11,7 @@ using UnityEngine;
 
 using Google.Protobuf;
 
-namespace Mediapipe.Unity.HandTracking
+namespace Mediapipe.Unity.Sample.HandTracking
 {
   public class HandTrackingGraph : GraphRunner
   {
@@ -93,12 +93,12 @@ namespace Mediapipe.Unity.HandTracking
     {
       if (runningMode.IsSynchronous())
       {
-        _palmDetectionsStream.StartPolling().AssertOk();
-        _handRectsFromPalmDetectionsStream.StartPolling().AssertOk();
-        _handLandmarksStream.StartPolling().AssertOk();
-        _handWorldLandmarksStream.StartPolling().AssertOk();
-        _handRectsFromLandmarksStream.StartPolling().AssertOk();
-        _handednessStream.StartPolling().AssertOk();
+        _palmDetectionsStream.StartPolling();
+        _handRectsFromPalmDetectionsStream.StartPolling();
+        _handLandmarksStream.StartPolling();
+        _handWorldLandmarksStream.StartPolling();
+        _handRectsFromLandmarksStream.StartPolling();
+        _handednessStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -148,7 +148,7 @@ namespace Mediapipe.Unity.HandTracking
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -177,9 +177,7 @@ namespace Mediapipe.Unity.HandTracking
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())
       {
-        var status = validatedGraphConfig.Initialize(config);
-
-        if (!status.Ok()) { return status; }
+        validatedGraphConfig.Initialize(config);
 
         var extensionRegistry = new ExtensionRegistry() { TensorsToDetectionsCalculatorOptions.Extensions.Ext, ThresholdingCalculatorOptions.Extensions.Ext };
         var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
@@ -192,7 +190,7 @@ namespace Mediapipe.Unity.HandTracking
           {
             var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
             options.MinScoreThresh = minDetectionConfidence;
-            Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
+            Debug.Log($"Min Detection Confidence = {minDetectionConfidence}");
           }
         }
 
@@ -202,10 +200,10 @@ namespace Mediapipe.Unity.HandTracking
           {
             var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
             options.Threshold = minTrackingConfidence;
-            Logger.LogInfo(TAG, $"Min Tracking Confidence = {minTrackingConfidence}");
+            Debug.Log($"Min Tracking Confidence = {minTrackingConfidence}");
           }
         }
-        return calculatorGraph.Initialize(cannonicalizedConfig);
+        calculatorGraph.Initialize(cannonicalizedConfig);
       }
     }
 
@@ -229,16 +227,16 @@ namespace Mediapipe.Unity.HandTracking
       }
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource, true);
       sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
       sidePacket.Emplace("num_hands", new IntPacket(maxNumHands));
 
-      Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
-      Logger.LogInfo(TAG, $"Max Num Hands = {maxNumHands}");
+      Debug.Log($"Model Complexity = {modelComplexity}");
+      Debug.Log($"Max Num Hands = {maxNumHands}");
 
       return sidePacket;
     }

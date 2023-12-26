@@ -50,17 +50,17 @@ namespace Mediapipe
       return matrixData;
     }
 
-    public override StatusOr<MatrixData> Consume()
+    public override MatrixData Consume()
     {
       throw new NotSupportedException();
     }
 
-    public override Status ValidateAsType()
+    public override void ValidateAsType()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsMatrix(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
   }
 }

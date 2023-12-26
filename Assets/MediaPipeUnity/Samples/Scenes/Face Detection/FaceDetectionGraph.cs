@@ -9,9 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-using Google.Protobuf;
-
-namespace Mediapipe.Unity.FaceDetection
+namespace Mediapipe.Unity.Sample.FaceDetection
 {
   public class FaceDetectionGraph : GraphRunner
   {
@@ -43,7 +41,7 @@ namespace Mediapipe.Unity.FaceDetection
     {
       if (runningMode.IsSynchronous())
       {
-        _faceDetectionsStream.StartPolling().AssertOk();
+        _faceDetectionsStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -73,7 +71,7 @@ namespace Mediapipe.Unity.FaceDetection
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -85,37 +83,30 @@ namespace Mediapipe.Unity.FaceDetection
         _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true, timeoutMicrosec);
       }
 
+      var faceDetectionCalculators = config.Node.Where((node) => node.Calculator.StartsWith("FaceDetection")).ToList();
+      foreach (var calculator in faceDetectionCalculators)
+      {
+        var calculatorOptions = new CalculatorOptions();
+        calculatorOptions.SetExtension(FaceDetectionOptions.Extensions.Ext, new FaceDetectionOptions { MinScoreThresh = minDetectionConfidence });
+        calculator.Options = calculatorOptions;
+        Debug.Log($"Min Detection Confidence ({calculator.Calculator}) = {minDetectionConfidence}");
+      }
+
       using (var validatedGraphConfig = new ValidatedGraphConfig())
       {
-        var status = validatedGraphConfig.Initialize(config);
-
-        if (!status.Ok()) { return status; }
-
-        var extensionRegistry = new ExtensionRegistry() { TensorsToDetectionsCalculatorOptions.Extensions.Ext };
-        var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
-        var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "TensorsToDetectionsCalculator").ToList();
-
-        foreach (var calculator in tensorsToDetectionsCalculators)
-        {
-          if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext))
-          {
-            var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
-            options.MinScoreThresh = minDetectionConfidence;
-            Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
-          }
-        }
-        return calculatorGraph.Initialize(cannonicalizedConfig);
+        validatedGraphConfig.Initialize(config);
+        calculatorGraph.Initialize(config);
       }
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
       sidePacket.Emplace("model_type", new IntPacket((int)modelType));
 
-      Logger.LogInfo(TAG, $"Model Selection = {modelType}");
+      Debug.Log($"Model Selection = {modelType}");
 
       return sidePacket;
     }

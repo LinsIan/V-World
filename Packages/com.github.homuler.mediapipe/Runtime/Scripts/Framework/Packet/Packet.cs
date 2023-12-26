@@ -53,23 +53,23 @@ namespace Mediapipe
     /// <exception cref="MediaPipeException">Thrown when the value is not set</exception>
     public abstract TValue Get();
 
-    public abstract StatusOr<TValue> Consume();
+    public abstract TValue Consume();
 
     public bool IsEmpty()
     {
       return SafeNativeMethods.mp_Packet__IsEmpty(mpPtr);
     }
 
-    public Status ValidateAsProtoMessageLite()
+    public void ValidateAsProtoMessageLite()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsProtoMessageLite(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
 
     // TODO: declare as abstract
-    public virtual Status ValidateAsType()
+    public virtual void ValidateAsType()
     {
       throw new NotImplementedException();
     }

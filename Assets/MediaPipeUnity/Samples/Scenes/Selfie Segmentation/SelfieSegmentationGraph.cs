@@ -6,8 +6,9 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace Mediapipe.Unity.SelfieSegmentation
+namespace Mediapipe.Unity.Sample.SelfieSegmentation
 {
   public class SelfieSegmentationGraph : GraphRunner
   {
@@ -25,7 +26,7 @@ namespace Mediapipe.Unity.SelfieSegmentation
     {
       if (runningMode.IsSynchronous())
       {
-        _segmentationMaskStream.StartPolling().AssertOk();
+        _segmentationMaskStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -55,7 +56,7 @@ namespace Mediapipe.Unity.SelfieSegmentation
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -65,12 +66,12 @@ namespace Mediapipe.Unity.SelfieSegmentation
       {
         _segmentationMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _SegmentationMaskStreamName, true, timeoutMicrosec);
       }
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
 
@@ -92,7 +93,7 @@ namespace Mediapipe.Unity.SelfieSegmentation
       sidePacket.Emplace("output_horizontally_flipped", new BoolPacket(outputHorizontallyFlipped));
       sidePacket.Emplace("output_vertically_flipped", new BoolPacket(outputVerticallyFlipped));
 
-      Logger.LogDebug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
+      Debug.Log($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
       return sidePacket;
     }
   }
