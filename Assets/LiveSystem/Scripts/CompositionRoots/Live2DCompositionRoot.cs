@@ -7,7 +7,8 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Mediapipe.Unity.IrisTracking;
+using Mediapipe.Unity.Sample;
+using Mediapipe.Unity.Sample.IrisTracking;
 using UnityEngine;
 using Mediapipe.Unity;
 

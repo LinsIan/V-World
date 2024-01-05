@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Mediapipe.Unity;
-using Mediapipe.Unity.IrisTracking;
+using Mediapipe.Unity.Sample.IrisTracking;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 

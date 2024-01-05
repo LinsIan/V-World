@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using Mediapipe.Unity.Holistic;
+using Mediapipe.Unity.Sample.Holistic;
 
 namespace LiveSystem
 {
