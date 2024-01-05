@@ -12,6 +12,7 @@ using UnityEngine;
 using Mediapipe;
 using Mediapipe.Unity;
 using LiveSystem.Data;
+using VContainer;
 
 namespace LiveSystem
 {
@@ -19,7 +20,7 @@ namespace LiveSystem
     {
         public Action<FaceData> OnFaceDataOutput { get; set; }
 
-        [InjectField] protected FaceLandmarkKeyPoints keyPoints;
+        [Inject] protected FaceLandmarkKeyPoints keyPoints;
         
         protected readonly List<ScalarKalmanFilter> filters;
         protected readonly float landmarkScale = 100;

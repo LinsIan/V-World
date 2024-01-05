@@ -13,13 +13,14 @@ using Mediapipe.Unity;
 using Mediapipe.Unity.Sample.IrisTracking;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using VContainer;
 
 namespace LiveSystem
 {
     public class Live2DLiveSystem : LiveSystem
     {
-        [InjectField] private IrisTrackingGraph graph;
-        [InjectField] private Live2DFaceDataCalculator faceDataCalculator;
+        [Inject] private IrisTrackingGraph graph;
+        [Inject] private Live2DFaceDataCalculator faceDataCalculator;
 
         protected override async UniTask InitSubSystem()
         {

@@ -10,13 +10,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Mediapipe.Unity.Sample.Holistic;
+using VContainer;
 
 namespace LiveSystem
 {
     public class Hom3DLiveSystem : LiveSystem
     {
-        [InjectField] private HolisticTrackingGraph graph;
-        [InjectField] private Home3DFaceDataCalculator faceDataCalculater;
+        [Inject] private HolisticTrackingGraph graph;
+        [Inject] private Home3DFaceDataCalculator faceDataCalculater;
 
         protected override async UniTask InitSubSystem()
         {

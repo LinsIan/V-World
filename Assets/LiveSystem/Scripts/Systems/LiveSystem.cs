@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mediapipe.Unity.Sample;
 using Cysharp.Threading.Tasks;
+using VContainer;
 
 namespace LiveSystem
 {
@@ -20,9 +21,9 @@ namespace LiveSystem
         // 由子類別去聲明需要注入的calculater、modelController、graph，和定義要怎麼Init
         // calculator和modelcontroller需要去聲明需要注入的資料(modelData、keypoints)，這樣liveSystem就不需要持有這些資料的類別
         // 由組合根去抓graph然後註冊
-        [InjectField] protected Solution solution;
-        [InjectField] protected ModelData modelData;
-        [InjectField] protected ModelController modelController;
+        [Inject] protected Solution solution;
+        [Inject] protected ModelData modelData;
+        [Inject] protected ModelController modelController;
 
         protected List<Calculator> calculaters = new List<Calculator>();
 

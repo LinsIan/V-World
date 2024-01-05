@@ -12,13 +12,14 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using LiveSystem.Data;
 using Cysharp.Threading.Tasks;
+using VContainer;
 
 namespace LiveSystem
 {
 
     public abstract class ModelController
     {
-        [InjectField] protected ModelData modelData;
+        [Inject] protected ModelData modelData;
 
         protected readonly float SensitivityConstant = 0.5f;
         protected GameObject modelObj;
