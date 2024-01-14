@@ -20,7 +20,7 @@ namespace VWorld
 {
     using Screen = Mediapipe.Unity.Screen;
 
-    public abstract class TaskApiRunner<TTask> : IStartable where TTask : Mediapipe.Tasks.Vision.Core.BaseVisionTaskApi
+    public abstract class TaskApiRunner<TTask> : IStartable, ITaskApiRunner where TTask : BaseVisionTaskApi
     {
         protected Bootstrap bootstrap;
         protected Screen screen;
@@ -36,13 +36,13 @@ namespace VWorld
             this.screen = screen;
         }
 
-        public virtual async void Start()
+        public async void Start()
         {
             await UniTask.WaitUntil(() => bootstrap.isFinished);
             Play();
         }
 
-        public virtual void Play()
+        public void Play()
         {
             if (cancellationTokenSource != null)
             {
@@ -55,19 +55,19 @@ namespace VWorld
             Run().Forget();
         }
 
-        public virtual void Pause()
+        public void Pause()
         {
             isPaused = true;
             ImageSourceProvider.ImageSource.Pause();
         }
 
-        public virtual void Resume()
+        public void Resume()
         {
             isPaused = false;
             ImageSourceProvider.ImageSource.Resume().ToUniTask().Forget();
         }
 
-        public virtual void Stop()
+        public void Stop()
         {
             isPaused = true;
             _stopwatch.Stop();
@@ -79,7 +79,7 @@ namespace VWorld
             taskApi = null;
         }
 
-        protected virtual async UniTaskVoid Run()
+        protected async UniTaskVoid Run()
         {
             await InitTaskApi();
 

@@ -11,6 +11,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Mediapipe.Unity.Sample.Holistic;
 using VContainer;
+using Mediapipe.Tasks.Vision.Core;
 
 namespace VWorld
 {
@@ -18,6 +19,11 @@ namespace VWorld
     {
         [Inject] private HolisticTrackingGraph graph;
         [Inject] private Home3DFaceDataCalculator faceDataCalculater;
+        
+        [Inject]
+        public Hom3DLiveSystem(ModelData modelData, ModelController modelController, ITaskApiRunner runner) : base(modelData, modelController, runner)
+        {
+        }
 
         protected override async UniTask InitSubSystem()
         {

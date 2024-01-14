@@ -14,6 +14,7 @@ using Mediapipe.Unity.Sample.IrisTracking;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using VContainer;
+using Mediapipe.Tasks.Vision.Core;
 
 namespace VWorld
 {
@@ -21,6 +22,11 @@ namespace VWorld
     {
         [Inject] private IrisTrackingGraph graph;
         [Inject] private Live2DFaceDataCalculator faceDataCalculator;
+        
+        [Inject]
+        public Live2DLiveSystem(ModelData modelData, ModelController modelController, ITaskApiRunner runner) : base(modelData, modelController, runner)
+        {
+        }
 
         protected override async UniTask InitSubSystem()
         {

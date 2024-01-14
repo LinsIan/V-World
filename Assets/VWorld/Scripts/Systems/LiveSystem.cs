@@ -7,44 +7,55 @@
 
 using System;
 using System.Collections;
+using Mediapipe.Tasks.Vision.Core;
 using System.Collections.Generic;
 using UnityEngine;
-using Mediapipe.Unity.Sample;
 using Cysharp.Threading.Tasks;
 using VContainer;
 using VWorld.Common;
+using VContainer.Unity;
 
 namespace VWorld
 {
     [DefaultExecutionOrder(2)]
-    public abstract class LiveSystem : MonoBehaviour
+    public abstract class LiveSystem : ITickable, IStartable
     {
         // 由子類別去聲明需要注入的calculater、modelController、graph，和定義要怎麼Init
         // calculator和modelcontroller需要去聲明需要注入的資料(modelData、keypoints)，這樣liveSystem就不需要持有這些資料的類別
-        // 由組合根去抓graph然後註冊
-        [Inject] protected Solution solution;
-        [Inject] protected ModelData modelData;
-        [Inject] protected ModelController modelController;
+        protected ModelData modelData;
+        protected ModelController modelController;
+        protected ITaskApiRunner runner;
 
         protected List<Calculator> calculaters = new List<Calculator>();
 
-        protected virtual async void Start()
+        public LiveSystem(ModelData modelData, ModelController modelController, ITaskApiRunner runner)
         {
-            enabled = false;
+            this.modelData = modelData;
+            this.modelController = modelController;
+            this.runner = runner;
+        }
+
+        public virtual async void Start()
+        {
             await InitSubSystem();
-            enabled = true;
         }
 
         protected virtual void Pause()
         {
-            solution.Pause();
+            runner.Pause();
+        }
+
+        protected virtual void Resume()
+        {
+            runner.Resume();
         }
 
         protected virtual void Stop()
         {
+            runner.Stop();
         }
 
-        protected virtual void Update()
+        public void Tick()
         {
             modelController.UpdateModel();
         }
@@ -65,12 +76,11 @@ namespace VWorld
             await modelController.ChangeModel(index);
             callback?.Invoke();
         }
-/*
 
-*/
         public void SetLiveMode(LiveMode mode)
         {
             modelController.SetLiveMode(mode);
-        }   
+        }
+
     }
 }
