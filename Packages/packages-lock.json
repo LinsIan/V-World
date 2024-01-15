@@ -16,6 +16,13 @@
         "com.unity.test-framework": "1.0.0"
       }
     },
+    "com.neuecc.unirx": {
+      "version": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "7cce378b3f8c8943b4cac8e847bdbb8e2e1802d1"
+    },
     "com.unity.addressables": {
       "version": "1.21.19",
       "depth": 0,
