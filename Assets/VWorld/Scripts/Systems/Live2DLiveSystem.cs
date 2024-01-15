@@ -20,19 +20,19 @@ namespace VWorld
 {
     public class Live2DLiveSystem : LiveSystem
     {
-        [Inject] private IrisTrackingGraph graph;
-        [Inject] private Live2DFaceDataCalculator faceDataCalculator;
+        private Live2DFaceDataCalculator faceDataCalculator;
         
         [Inject]
-        public Live2DLiveSystem(ModelData modelData, ModelController modelController, ITaskApiRunner runner) : base(modelData, modelController, runner)
+        public Live2DLiveSystem(ModelData modelData, ModelController modelController, FaceLandmarkerRunner runner, Live2DFaceDataCalculator faceDataCalculator) 
+        : base(modelData, modelController, runner)
         {
+            this.faceDataCalculator = faceDataCalculator;
+            calculaters.Add(faceDataCalculator);
         }
 
         protected override async UniTask InitSubSystem()
         {
             calculaters.Add(faceDataCalculator);
-
-            await UniTask.WaitForEndOfFrame(graph);
 
             graph.OnFaceLandmarksWithIrisOutput += faceDataCalculator.OnLandmarksOutput;
 

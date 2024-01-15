@@ -25,8 +25,7 @@ namespace VWorld
         protected ModelData modelData;
         protected ModelController modelController;
         protected ITaskApiRunner runner;
-
-        protected List<Calculator> calculaters = new List<Calculator>();
+        protected bool isRunning = false;
 
         public LiveSystem(ModelData modelData, ModelController modelController, ITaskApiRunner runner)
         {
@@ -37,26 +36,36 @@ namespace VWorld
 
         public virtual async void Start()
         {
+            isRunning = false;
             await InitSubSystem();
+            isRunning = true;
         }
 
         protected virtual void Pause()
         {
             runner.Pause();
+            isRunning = false;
         }
 
         protected virtual void Resume()
         {
             runner.Resume();
+            isRunning = true;
         }
 
         protected virtual void Stop()
         {
             runner.Stop();
+            isRunning = false;
         }
 
         public void Tick()
         {
+            if (!isRunning)
+            {
+                return;
+            }
+
             modelController.UpdateModel();
         }
 
@@ -65,16 +74,18 @@ namespace VWorld
             await modelController.Init();
         }
 
-        public async void SetModelData(ModelData newData, Action callback = null)
+        public async void SetModelData(ModelData newData)
         {
+            Pause();
             await modelController.SetModelData(newData);
-            callback?.Invoke();
+            Resume();
         }
 
-        public async void ChangeModel(int index, Action callback = null)
+        public async void ChangeModel(int index)
         {
+            Pause();
             await modelController.ChangeModel(index);
-            callback?.Invoke();
+            Resume();
         }
 
         public void SetLiveMode(LiveMode mode)
