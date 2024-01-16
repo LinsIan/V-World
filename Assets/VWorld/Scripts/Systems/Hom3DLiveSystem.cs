@@ -27,7 +27,6 @@ namespace VWorld
 
         protected override async UniTask InitSubSystem()
         {
-            calculaters.Add(faceDataCalculater);
             graph.OnFaceLandmarksOutput += faceDataCalculater.OnLandmarksOutput;
             // graph.OnLeftIrisLandmarksOutput += (faceDataCalculater.OnLeftIrisLandmarksOutput);
             // graph.OnRightHandLandmarksOutput += faceDataCalculater.OnRightIrisLandmarksOutput;

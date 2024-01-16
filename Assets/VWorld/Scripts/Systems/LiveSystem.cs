@@ -14,17 +14,19 @@ using Cysharp.Threading.Tasks;
 using VContainer;
 using VWorld.Common;
 using VContainer.Unity;
+using UniRx;
 
 namespace VWorld
 {
     [DefaultExecutionOrder(2)]
-    public abstract class LiveSystem : ITickable, IStartable
+    public abstract class LiveSystem : IStartable, ITickable, IDisposable
     {
         // 由子類別去聲明需要注入的calculater、modelController、graph，和定義要怎麼Init
         // calculator和modelcontroller需要去聲明需要注入的資料(modelData、keypoints)，這樣liveSystem就不需要持有這些資料的類別
         protected ModelData modelData;
         protected ModelController modelController;
         protected ITaskApiRunner runner;
+        CompositeDisposable disposables = new CompositeDisposable();
         protected bool isRunning = false;
 
         public LiveSystem(ModelData modelData, ModelController modelController, ITaskApiRunner runner)
@@ -93,5 +95,9 @@ namespace VWorld
             modelController.SetLiveMode(mode);
         }
 
+        public void Dispose()
+        {
+            disposables.Dispose();
+        }
     }
 }

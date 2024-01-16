@@ -13,12 +13,16 @@ using Mediapipe.Unity.Sample;
 using Mediapipe.Unity.Sample.PoseLandmarkDetection;
 using VContainer;
 using Mediapipe.Tasks.Vision.PoseLandmarker;
+using UniRx;
 
 namespace VWorld
 {
     public class PoseLandmarkerRunner : TaskApiRunner<PoseLandmarker>
     {
         private readonly PoseLandmarkDetectionConfig config = new();
+        public IReadOnlyReactiveProperty<PoseLandmarkerResult> Result => result;
+
+        private ReactiveProperty<PoseLandmarkerResult> result = new();
 
         [Inject]
         public PoseLandmarkerRunner(Bootstrap bootstrap, Mediapipe.Unity.Screen screen) : base(bootstrap, screen)
@@ -59,6 +63,7 @@ namespace VWorld
 
         private void OnPoseLandmarkDetectionOutput(PoseLandmarkerResult result, Image image, int timestamp)
         {
+            this.result.Value = result;
         }
     }
 }

@@ -12,12 +12,16 @@ using Mediapipe.Tasks.Vision.Core;
 using Mediapipe.Unity.Sample;
 using Mediapipe.Unity.Sample.FaceLandmarkDetection;
 using VContainer;
+using UniRx;
 
 namespace VWorld
 {
     public class FaceLandmarkerRunner : TaskApiRunner<FaceLandmarker>
     {
-        private readonly FaceLandmarkDetectionConfig config = new();
+        public readonly FaceLandmarkDetectionConfig config = new();
+        public IReadOnlyReactiveProperty<FaceLandmarkerResult> Result => result;
+
+        private ReactiveProperty<FaceLandmarkerResult> result = new();
 
         [Inject]
         public FaceLandmarkerRunner(Bootstrap bootstrap, Mediapipe.Unity.Screen screen) : base(bootstrap, screen)
@@ -58,6 +62,7 @@ namespace VWorld
 
         private void OnFaceLandmarkDetectionOutput(FaceLandmarkerResult result, Image image, int timestamp)
         {
+            this.result.Value = result;
         }
 
     }

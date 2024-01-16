@@ -27,14 +27,13 @@ namespace VWorld
         : base(modelData, modelController, runner)
         {
             this.faceDataCalculator = faceDataCalculator;
-            calculaters.Add(faceDataCalculator);
+            runner.Result.Subscribe(faceDataCalculator.OnLandmarksOutput).AddTo(disposables);
         }
 
         protected override async UniTask InitSubSystem()
         {
-            calculaters.Add(faceDataCalculator);
 
-            graph.OnFaceLandmarksWithIrisOutput += faceDataCalculator.OnLandmarksOutput;
+            // graph.OnFaceLandmarksWithIrisOutput += faceDataCalculator.OnLandmarksOutput;
 
             if (modelController is Live2DModelController controller)
             {

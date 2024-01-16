@@ -12,12 +12,15 @@ using Mediapipe.Tasks.Vision.Core;
 using Mediapipe.Unity.Sample;
 using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using VContainer;
+using UniRx;
 
 namespace VWorld
 {
     public class HandLandmarkerRunner : TaskApiRunner<HandLandmarker>
     {
         public readonly HandLandmarkDetectionConfig config = new();
+        public IReadOnlyReactiveProperty<HandLandmarkerResult> Result => result;
+        private ReactiveProperty<HandLandmarkerResult> result = new();
 
         [Inject]
         public HandLandmarkerRunner(Bootstrap bootstrap, Mediapipe.Unity.Screen screen) : base(bootstrap, screen)
@@ -41,21 +44,22 @@ namespace VWorld
 
         protected override void Detect(Image image, ImageProcessingOptions options)
         {
-            throw new System.NotImplementedException();
+            taskApi.Detect(image, options);
         }
 
         protected override void DetectAsync(Image image, int timestamp, ImageProcessingOptions options)
         {
-            throw new System.NotImplementedException();
+            taskApi.DetectAsync(image, timestamp, options);
         }
 
         protected override void DetectForVideo(Image image, int timestamp, ImageProcessingOptions options)
         {
-            throw new System.NotImplementedException();
+            taskApi.DetectForVideo(image, timestamp, options);
         }
 
         private void OnHandLandmarkDetectionOutput(HandLandmarkerResult result, Image image, int timestamp)
         {
+            this.result.Value = result;
         }
     }
 }
