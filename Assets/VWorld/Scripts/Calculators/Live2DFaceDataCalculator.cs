@@ -8,13 +8,22 @@
 using Mediapipe;
 using VWorld.Data;
 using VWorld.Common;
+using VContainer;
+using System.Collections.Generic;
+using Mediapipe.Tasks.Components.Containers;
 
 namespace VWorld
 {
     public class Live2DFaceDataCalculator : FaceDataCalculater
     {
-        public Live2DFaceDataCalculator()
+        [Inject]
+        public Live2DFaceDataCalculator(FaceLandmarkKeyPoints keyPoints) : base(keyPoints)
         {
+        }
+
+        protected override FaceData Calculate(IReadOnlyList<NormalizedLandmarks> data)
+        {
+            return base.Calculate(data);
         }
 
         protected override FaceData Calculate(NormalizedLandmarkList data)

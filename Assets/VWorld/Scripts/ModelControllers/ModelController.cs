@@ -20,16 +20,17 @@ namespace VWorld
 
     public abstract class ModelController
     {
-        [Inject] protected ModelData modelData;
-
+        protected ModelData modelData;
         protected readonly float SensitivityConstant = 0.5f;
         protected GameObject modelObj;
         protected AssetReferenceGameObject modelRef;
         protected LiveMode liveMode;
         protected bool isPause = true;
-
-        public ModelController()
+        
+        [Inject]
+        public ModelController(ModelData modelData)
         {
+            this.modelData = modelData;
         }
 
         public virtual async UniTask Init()

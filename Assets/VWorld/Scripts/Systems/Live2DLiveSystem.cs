@@ -9,12 +9,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Mediapipe.Unity;
-using Mediapipe.Unity.Sample.IrisTracking;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using VContainer;
-using Mediapipe.Tasks.Vision.Core;
+using Mediapipe.Tasks.Vision.FaceLandmarker;
+using UniRx;
+
 
 namespace VWorld
 {
@@ -23,11 +23,11 @@ namespace VWorld
         private Live2DFaceDataCalculator faceDataCalculator;
         
         [Inject]
-        public Live2DLiveSystem(ModelData modelData, ModelController modelController, FaceLandmarkerRunner runner, Live2DFaceDataCalculator faceDataCalculator) 
+        public Live2DLiveSystem(Live2DFaceDataCalculator faceDataCalculator, ModelData modelData, ModelController modelController, FaceLandmarkerRunner runner) 
         : base(modelData, modelController, runner)
         {
             this.faceDataCalculator = faceDataCalculator;
-            runner.Result.Subscribe(faceDataCalculator.OnLandmarksOutput).AddTo(disposables);
+            
         }
 
         protected override async UniTask InitSubSystem()

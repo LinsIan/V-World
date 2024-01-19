@@ -13,7 +13,7 @@ using Mediapipe;
 using Mediapipe.Unity;
 using VWorld.Data;
 using VWorld.Common;
-using VContainer;
+using Mediapipe.Tasks.Components.Containers;
 
 namespace VWorld
 {
@@ -21,7 +21,7 @@ namespace VWorld
     {
         public Action<FaceData> OnFaceDataOutput { get; set; }
 
-        [Inject] protected FaceLandmarkKeyPoints keyPoints;
+        protected FaceLandmarkKeyPoints keyPoints;
         
         protected readonly List<ScalarKalmanFilter> filters;
         protected readonly float landmarkScale = 100;
@@ -30,15 +30,24 @@ namespace VWorld
         protected readonly float WinkEyeDistance = 0.3f;
         protected readonly float MouthOpenConstanst = 0.4f;
 
-        public FaceDataCalculater()
+        public FaceDataCalculater(FaceLandmarkKeyPoints keyPoints)
         {
+            this.keyPoints = keyPoints;
             filters = new List<ScalarKalmanFilter>();
             for (int i = 0; i < keyPoints.AllPoints.Count; i++)
             {
                 filters.Add(new ScalarKalmanFilter());
             }
         }
-        
+
+        public override void OnLandmarksOutput(IReadOnlyList<NormalizedLandmarks> data)
+        {
+            if (data == null)
+            {
+                return;
+            }
+        }
+
         public override void OnLandmarksOutput(object sender, OutputEventArgs<NormalizedLandmarkList> data)
         {
             if (data.value == null)
@@ -51,6 +60,11 @@ namespace VWorld
 
         public override void OnMultiLandmarksOutput(object sender, OutputEventArgs<List<NormalizedLandmarkList>> data)
         {
+        }
+
+        protected virtual FaceData Calculate(IReadOnlyList<NormalizedLandmarks> data)
+        {
+            return new FaceData();
         }
 
         protected virtual FaceData Calculate(NormalizedLandmarkList data)
@@ -86,7 +100,7 @@ namespace VWorld
             return sum / points.Count;
         }
         
-        protected Vector3 GetFaceEulerAngles(NormalizedLandmark midPoint, NormalizedLandmark rightPoint, NormalizedLandmark leftPoint)
+        protected Vector3 GetFaceEulerAngles(Mediapipe.NormalizedLandmark midPoint, Mediapipe.NormalizedLandmark rightPoint, Mediapipe.NormalizedLandmark leftPoint)
         {
             var mid = new Vector3(midPoint.X, midPoint.Y, midPoint.Z);
             var right = new Vector3(rightPoint.X, rightPoint.Y, rightPoint.Z);

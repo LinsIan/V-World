@@ -8,11 +8,17 @@
 using System.Collections.Generic;
 using Mediapipe;
 using Mediapipe.Unity;
+using Mediapipe.Tasks.Components.Containers;
 
 namespace VWorld
 {
     public abstract class Calculator
     {
+        
+        public virtual void OnLandmarksOutput(IReadOnlyList<NormalizedLandmarks> data)
+        {
+        }
+
         public virtual void OnLandmarksOutput(object sender, OutputEventArgs<NormalizedLandmarkList> data)
         {
         }
