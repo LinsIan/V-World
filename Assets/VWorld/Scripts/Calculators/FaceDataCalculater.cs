@@ -9,129 +9,128 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Mediapipe;
-using Mediapipe.Unity;
 using VWorld.Data;
 using VWorld.Common;
+using UniRx;
 using Mediapipe.Tasks.Components.Containers;
 
 namespace VWorld
 {
-    public class FaceDataCalculater : Calculator
+    public class FaceDataCalculater : ICalculator
     {
-        public Action<FaceData> OnFaceDataOutput { get; set; }
-
-        protected FaceLandmarkKeyPoints keyPoints;
+        public ReactiveProperty<FaceData> LastestData { get; } = new ReactiveProperty<FaceData>();
         
-        protected readonly List<ScalarKalmanFilter> filters;
+        protected FaceLandmarkKeyPoints keyPoints;
+        protected IReadOnlyList<NormalizedLandmark> landmarks;
+        protected List<int> FilteredkeyPointsIndex = new List<int>();
+        protected List<ScalarKalmanFilter> filters = new List<ScalarKalmanFilter>();
+        protected Dictionary<int, Vector3> filteredKeyPoints = new Dictionary<int, Vector3>();
+
         protected readonly float landmarkScale = 100;
         protected readonly float BodyRate = 3;
         protected readonly float EyeOpenConstanst = 0.7f;
         protected readonly float WinkEyeDistance = 0.3f;
         protected readonly float MouthOpenConstanst = 0.4f;
 
+        protected int MidFaceDirectionPointIndex;
+        protected int LeftFaceDirectionPointIndex;
+        protected int RightFaceDirectionPointIndex;
+        protected int LeftIrisPointIndex;
+
+        protected float EyeLOpen =>
+        (landmarks[keyPoints.LeftEyePoints[Direction.Down]].y - landmarks[keyPoints.LeftEyePoints[Direction.Up]].y) * landmarkScale - EyeOpenConstanst;
+        
+        protected float EyeROpen =>
+        (landmarks[keyPoints.RightEyePoints[Direction.Down]].y - landmarks[keyPoints.RightEyePoints[Direction.Up]].y) * landmarkScale - EyeOpenConstanst;
+
+        protected float MouthOpenY =>
+        (landmarks[keyPoints.InnerLipsPoints[Direction.Down]].y - landmarks[keyPoints.InnerLipsPoints[Direction.Up]].y) * landmarkScale - MouthOpenConstanst;
+
         public FaceDataCalculater(FaceLandmarkKeyPoints keyPoints)
         {
             this.keyPoints = keyPoints;
-            filters = new List<ScalarKalmanFilter>();
-            for (int i = 0; i < keyPoints.AllPoints.Count; i++)
+            SetFilteredKeyPointsIndex();
+
+            for (int i = 0; i < FilteredkeyPointsIndex.Count; i++)
             {
                 filters.Add(new ScalarKalmanFilter());
+                filteredKeyPoints.Add(FilteredkeyPointsIndex[i], Vector3.zero);
             }
         }
 
-        public override void OnLandmarksOutput(IReadOnlyList<NormalizedLandmarks> data)
+        public void OnLandmarkDetectionOutput(IReadOnlyList<NormalizedLandmark> landmarks)
         {
-            if (data == null)
+            this.landmarks = landmarks;
+            LastestData.Value = Calculate();
+        }
+
+        protected virtual void SetFilteredKeyPointsIndex() 
+        {
+            MidFaceDirectionPointIndex = keyPoints.FaceDirectionPoints[Direction.Mid];
+            LeftFaceDirectionPointIndex = keyPoints.FaceDirectionPoints[Direction.Left];
+            RightFaceDirectionPointIndex = keyPoints.FaceDirectionPoints[Direction.Right];
+            LeftIrisPointIndex = keyPoints.LeftIrisPoint;
+
+            FilteredkeyPointsIndex.Add(MidFaceDirectionPointIndex);
+            FilteredkeyPointsIndex.Add(LeftFaceDirectionPointIndex);
+            FilteredkeyPointsIndex.Add(RightFaceDirectionPointIndex);
+            FilteredkeyPointsIndex.Add(LeftIrisPointIndex);
+
+            foreach (var point in keyPoints.LeftEyePoints)
             {
-                return;
+                FilteredkeyPointsIndex.Add(point.Value);
             }
         }
 
-        public override void OnLandmarksOutput(object sender, OutputEventArgs<NormalizedLandmarkList> data)
-        {
-            if (data.value == null)
-            {
-                return;
-            }
-
-            OnFaceDataOutput?.Invoke(Calculate(data.value));
-        }
-
-        public override void OnMultiLandmarksOutput(object sender, OutputEventArgs<List<NormalizedLandmarkList>> data)
-        {
-        }
-
-        protected virtual FaceData Calculate(IReadOnlyList<NormalizedLandmarks> data)
+        protected virtual FaceData Calculate()
         {
             return new FaceData();
         }
 
-        protected virtual FaceData Calculate(NormalizedLandmarkList data)
+        protected Vector3 GetCenterPoint(IDictionary<Direction, int> pointsIndex, bool useFilteredPoint = true)
         {
-            //if (isFirst)
-            //{
-            //    foreach (var mark in landmarks)
-            //    {
-            //        filters.Add(new ScalarKalmanFilter());
-            //    }
-            //    isFirst = false;
-            //}
+            var sum = Vector3.zero;
+            
+            if (useFilteredPoint)
+            {
+                foreach (var index in pointsIndex)
+                {
+                    sum += filteredKeyPoints[index.Value];
+                }
+            }
+            else
+            {
+                foreach (var index in pointsIndex)
+                {
+                    sum += landmarks[index.Value].ToVector3();
+                }
+            }
 
-            //for (int i = 0; i < landmarks.Count; i++)
-            //{
-            //    Vector3 point = new Vector3(landmarks[i].X, landmarks[i].Y, landmarks[i].Z);
-            //    var filt = filters[i].Filt(point);
-            //    landmarks[i].X = filt.x;
-            //    landmarks[i].Y = filt.y;
-            //    landmarks[i].Z = filt.z;
-            //}
-
-            return new FaceData();
+            return sum / pointsIndex.Count;
         }
 
-        protected Vector3 GetCenterPoint(Dictionary<Direction,int> points, NormalizedLandmarkList data)
+        protected Vector3 GetFaceEulerAngles(Vector3 midPoint, Vector3 rightPoint, Vector3 leftPoint)
         {
-            var landmarks = data.Landmark;
-            var sum = points
-                .Select(point => new Vector3(landmarks[point.Value].X, landmarks[point.Value].Y, landmarks[point.Value].Z))
-                .Aggregate((result, point) => result + point);
-
-            return sum / points.Count;
-        }
-        
-        protected Vector3 GetFaceEulerAngles(Mediapipe.NormalizedLandmark midPoint, Mediapipe.NormalizedLandmark rightPoint, Mediapipe.NormalizedLandmark leftPoint)
-        {
-            var mid = new Vector3(midPoint.X, midPoint.Y, midPoint.Z);
-            var right = new Vector3(rightPoint.X, rightPoint.Y, rightPoint.Z);
-            var left = new Vector3(leftPoint.X, leftPoint.Y, leftPoint.Z);
-
             //angle X&Y
-            var faceDirection = mid - (right + left) / 2;
+            var faceDirection = midPoint - (rightPoint + leftPoint) / 2;
             var angle = Quaternion.FromToRotation(Vector3.back, faceDirection.normalized).eulerAngles;
 
             //angle Z
-            var skewVector = left - right;
+            var skewVector = leftPoint - rightPoint;
             skewVector.z = 0;
             angle.z = Quaternion.FromToRotation(Vector3.right, skewVector).eulerAngles.z;
             return angle;
         }
 
-        protected void FiltData(NormalizedLandmarkList data)
+        protected void FiltKeyPoints()
         {
-            var landmarks = data.Landmark;
-            for (int i = 0; i < keyPoints.AllPoints.Count; i++)
+            for (int i = 0; i < FilteredkeyPointsIndex.Count; i++)
             {
-                var point = keyPoints.AllPoints[i];
-                if (point >= landmarks.Count)
-                {
-                    continue;
-                }
-                var landmark = landmarks[point];
-                Vector3 filt = filters[i].Filt(new Vector3(landmark.X, landmark.Y, landmark.Z));
-                landmark.X = filt.x;
-                landmark.Y = filt.y;
-                landmark.Z = filt.z;
+                int index = FilteredkeyPointsIndex[i];
+                Vector3 point = landmarks[index].ToVector3();
+                Vector3 filt = filters[i].Filt(point);
+
+                filteredKeyPoints[index] = filt;
             }
         }
     }

@@ -11,6 +11,7 @@ using UnityEngine;
 using VWorld.Data;
 using VWorld.Common;
 using Cysharp.Threading.Tasks;
+using VContainer;
 
 namespace VWorld
 {
@@ -20,7 +21,8 @@ namespace VWorld
         protected Home3DModel model;
         protected FaceData calibrationFaceData = default;
 
-        public Home3DModelController()
+        [Inject]
+        public Home3DModelController(ModelData modelData) : base(modelData)
         {
         }
 

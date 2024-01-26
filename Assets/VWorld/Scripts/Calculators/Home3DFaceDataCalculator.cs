@@ -18,41 +18,25 @@ namespace VWorld
 {
     public class Home3DFaceDataCalculator : FaceDataCalculater
     {
-        protected Vector2 leftIris = Vector2.zero;
-        
-        public Home3DFaceDataCalculator()
+        protected int NosePointIndex;
+
+        public Home3DFaceDataCalculator(FaceLandmarkKeyPoints keyPoints) : base(keyPoints)
         {
         }
 
-        public void OnLeftIrisLandmarksOutput(object sender, OutputEventArgs<NormalizedLandmarkList> data)
+        protected override void SetFilteredKeyPointsIndex() 
         {
-            if (data.value == null)
-            {
-                return;
-            }
-            var leftIrisLandmark = data.value.Landmark[keyPoints.LeftIrisPoint - keyPoints.FaceMeshCount];
-            leftIris = new Vector2(leftIrisLandmark.X, leftIrisLandmark.Y);
-        }
-
-        public void OnRightIrisLandmarksOutput(NormalizedLandmarkList data)
-        {
+            NosePointIndex = keyPoints.NosePoint;
+            FilteredkeyPointsIndex.Add(NosePointIndex);
+            base.SetFilteredKeyPointsIndex();
         }
         
-        protected override FaceData Calculate(NormalizedLandmarkList data)
+        protected override FaceData Calculate()
         {
-            var landmarks = data.Landmark;
-            var eyeLOpen = (landmarks[keyPoints.LeftEyePoints[Direction.Down]].Y - landmarks[keyPoints.LeftEyePoints[Direction.Up]].Y) * landmarkScale - EyeOpenConstanst;
-            var eyeROpen = (landmarks[keyPoints.RightEyePoints[Direction.Down]].Y - landmarks[keyPoints.RightEyePoints[Direction.Up]].Y) * landmarkScale - EyeOpenConstanst;
-            var mouthOpenY = (landmarks[keyPoints.InnerLipsPoints[Direction.Down]].Y - landmarks[keyPoints.InnerLipsPoints[Direction.Up]].Y) * landmarkScale - MouthOpenConstanst;
-            
-            if (eyeLOpen - eyeROpen <= WinkEyeDistance && eyeROpen - eyeLOpen <= WinkEyeDistance)
-            {
-                eyeROpen = eyeLOpen;
-            }
-            
-            FiltData(data);
+            bool isNotWink = (EyeLOpen - EyeROpen <= WinkEyeDistance) && (EyeROpen - EyeLOpen <= WinkEyeDistance);
+            FiltKeyPoints();
 
-            var eulerAngle = GetFaceEulerAngles(landmarks[keyPoints.FaceDirectionPoints[Direction.Mid]], landmarks[keyPoints.FaceDirectionPoints[Direction.Left]], landmarks[keyPoints.FaceDirectionPoints[Direction.Right]]);
+            var eulerAngle = GetFaceEulerAngles(filteredKeyPoints[MidFaceDirectionPointIndex], filteredKeyPoints[LeftFaceDirectionPointIndex], filteredKeyPoints[RightFaceDirectionPointIndex]);
 
 			if (eulerAngle.x > 180)
 			{
@@ -79,19 +63,33 @@ namespace VWorld
                     基準點 (0.5, 0, -0.5)
              */
 
-            var leftEye = GetCenterPoint(keyPoints.LeftEyePoints, data);
-            var eyeBallX = (leftIris.x - leftEye.x) * -landmarkScale;
-            var eyeBallY = (leftIris.y - leftEye.y) * -landmarkScale;
+            var leftEye = GetCenterPoint(keyPoints.LeftEyePoints);
+            var leftIrys = filteredKeyPoints[LeftIrisPointIndex];
+            var eyeBallX = (leftIrys.x - leftEye.x) * -landmarkScale;
+            var eyeBallY = (leftIrys.y - leftEye.y) * -landmarkScale;
 
-            var nose = landmarks[keyPoints.NosePoint];
-            var noseDirectoin = new Vector3(nose.X - 0.5f, nose.Y, nose.Z + 0.5f);
+            var nose = filteredKeyPoints[NosePointIndex];
+            var noseDirectoin = new Vector3(nose.x - 0.5f, nose.y, nose.z + 0.5f);
             var bodyAngle = Quaternion.FromToRotation(Vector3.up, noseDirectoin).eulerAngles;
 
             //var bodyAngleX = bodyAngle.x;
             //var bodyAngleY = eulerAngle.y / BodyRate;
             //var bodyAngleZ = bodyAngle.z;
 
-            return new FaceData(eulerAngle.x, eulerAngle.y, eulerAngle.z, eyeLOpen, eyeROpen, eyeBallX, eyeBallY, mouthOpenY, bodyAngle.x, bodyAngle.y, bodyAngle.z);
+            return new FaceData
+            (
+                eulerAngle.x,
+                eulerAngle.y,
+                eulerAngle.z,
+                EyeLOpen,
+                isNotWink ? EyeLOpen : EyeROpen,
+                eyeBallX,
+                eyeBallY,
+                MouthOpenY,
+                bodyAngle.x,
+                bodyAngle.y,
+                bodyAngle.z
+            );
         }
     }
 }

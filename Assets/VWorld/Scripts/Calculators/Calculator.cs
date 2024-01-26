@@ -6,26 +6,12 @@
  */
 
 using System.Collections.Generic;
-using Mediapipe;
-using Mediapipe.Unity;
 using Mediapipe.Tasks.Components.Containers;
 
 namespace VWorld
 {
-    public abstract class Calculator
+    public interface ICalculator
     {
-        
-        public virtual void OnLandmarksOutput(IReadOnlyList<NormalizedLandmarks> data)
-        {
-        }
-
-        public virtual void OnLandmarksOutput(object sender, OutputEventArgs<NormalizedLandmarkList> data)
-        {
-        }
-
-        public virtual void OnMultiLandmarksOutput(object sender, OutputEventArgs<List<NormalizedLandmarkList>> data)
-        {
-        }
-
+        public abstract void OnLandmarkDetectionOutput(IReadOnlyList<NormalizedLandmark> landmarks);
     }
 }

@@ -14,6 +14,7 @@ using VWorld.Common;
 using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework.HarmonicMotion;
 using Cysharp.Threading.Tasks;
+using VContainer;
 
 namespace VWorld
 {
@@ -25,8 +26,9 @@ namespace VWorld
         protected FaceData defaultFaceData;
         protected FaceData calibrationFaceData;
         protected Interpolator<FaceData> interpolator;
-        
-        public Live2DModelController()
+
+        [Inject]
+        public Live2DModelController(ModelData modelData) : base(modelData)
         {
         }
 

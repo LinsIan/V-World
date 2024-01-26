@@ -6,19 +6,24 @@
  */
 
 using System;
+using Mediapipe.Tasks.Components.Containers;
 using UnityEngine;
-using Mediapipe;
 
 namespace VWorld.Common
 {
     internal static class MediapipeExtensionMethods
     {
-        public static NormalizedLandmark Round(this NormalizedLandmark landmark, int digits)
+        public static Vector3 Round(this NormalizedLandmark landmark, int digits)
         {
-            landmark.X = (float)Math.Round(landmark.X, digits);
-            landmark.Y = (float)Math.Round(landmark.Y, digits);
-            landmark.Z = (float)Math.Round(landmark.Z, digits);
-            return landmark;
+            var x = (float)Math.Round(landmark.x, digits);
+            var y = (float)Math.Round(landmark.y, digits);
+            var z = (float)Math.Round(landmark.z, digits);
+            return new Vector3(x, y, z);
+        }
+
+        public static Vector3 ToVector3(this NormalizedLandmark landmark)
+        {
+            return new Vector3(landmark.x, landmark.y, landmark.z);
         }
     }
 }

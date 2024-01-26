@@ -12,6 +12,7 @@ using UnityEngine.AddressableAssets;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using VContainer;
+using Mediapipe.Tasks.Components.Containers;
 using Mediapipe.Tasks.Vision.FaceLandmarker;
 using UniRx;
 
@@ -27,7 +28,13 @@ namespace VWorld
         : base(modelData, modelController, runner)
         {
             this.faceDataCalculator = faceDataCalculator;
-            
+            runner.Result.Subscribe(result => 
+            {
+                if (result.faceLandmarks != null && result.faceLandmarks.Count > 0)
+                {
+                    faceDataCalculator.OnLandmarkDetectionOutput(result.faceLandmarks[0].landmarks);
+                }
+            });
         }
 
         protected override async UniTask InitSubSystem()
@@ -35,10 +42,10 @@ namespace VWorld
 
             // graph.OnFaceLandmarksWithIrisOutput += faceDataCalculator.OnLandmarksOutput;
 
-            if (modelController is Live2DModelController controller)
-            {
-                faceDataCalculator.OnFaceDataOutput += controller.OnFaceDataOutput;
-            }
+            // if (modelController is Live2DModelController controller)
+            // {
+            //     faceDataCalculator.OnFaceDataOutput += controller.OnFaceDataOutput;
+            // }
 
             await base.InitSubSystem();
         }
