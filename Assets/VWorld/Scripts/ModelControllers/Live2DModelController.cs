@@ -74,12 +74,16 @@ namespace VWorld
             UpdateParamter(ParamId.ParamBodyAngleY, currentFaceData.BodyAngleY, calibrationFaceData.BodyAngleY);
             UpdateParamter(ParamId.ParamBodyAngleZ, currentFaceData.BodyAngleZ, calibrationFaceData.BodyAngleZ);
 
-            foreach (var sensitivity in modelData.Sensitivities)
+
+            for (int i = 0; i < modelData.Sensitivities.Count; i++)
             {
-                foreach (var id in sensitivity.EffectedParamIds)
+                var sensitivity = modelData.Sensitivities[i];
+
+                for (int j = 0; j < sensitivity.EffectedParamIds.Count; j++)
                 {
-                    if (parameters.ContainsKey(id))
+                    if (parameters.ContainsKey(sensitivity.EffectedParamIds[j]))
                     {
+                        var id = sensitivity.EffectedParamIds[j];
                         ApplySensitivity(id, ref parameters[id].Value, sensitivity.Value);
                     }
                 }

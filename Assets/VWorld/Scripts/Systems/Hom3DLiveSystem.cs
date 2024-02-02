@@ -17,30 +17,22 @@ namespace VWorld
 {
     public class Hom3DLiveSystem : LiveSystem
     {
-        private Home3DFaceDataCalculator faceDataCalculater;
-        
         [Inject]
-        public Hom3DLiveSystem(Home3DFaceDataCalculator faceDataCalculator, ModelData modelData, ModelController modelController, FaceLandmarkerRunner runner) 
+        public Hom3DLiveSystem(Home3DFaceDataCalculator faceDataCalculator, ModelData modelData, Home3DModelController modelController, FaceLandmarkerRunner runner) 
         : base(modelData, modelController, runner)
         {
-            this.faceDataCalculater = faceDataCalculator;
             runner.Result.Subscribe(result => 
             {
                 if (result.faceLandmarks != null && result.faceLandmarks.Count > 0)
                 {
-                    faceDataCalculater.OnLandmarkDetectionOutput(result.faceLandmarks[0].landmarks);
+                    faceDataCalculator.OnLandmarkDetectionOutput(result.faceLandmarks[0].landmarks);
                 }
             });
-        }
 
-        protected override async UniTask InitSubSystem()
-        {
-            // if (modelController is Home3DModelController controller)
-            // {
-            //     faceDataCalculater.OnFaceDataOutput += controller.OnFaceDataOutput;
-            // }
-
-            await base.InitSubSystem();
+            faceDataCalculator.LastestData.Subscribe(data => 
+            {
+                modelController.OnFaceDataOutput(data);
+            });
         }
     }
 }

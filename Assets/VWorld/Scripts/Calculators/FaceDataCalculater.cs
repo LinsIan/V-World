@@ -16,7 +16,7 @@ using Mediapipe.Tasks.Components.Containers;
 
 namespace VWorld
 {
-    public class FaceDataCalculater : ICalculator
+    public class FaceDataCalculater : ICalculator<FaceData>
     {
         public ReactiveProperty<FaceData> LastestData { get; } = new ReactiveProperty<FaceData>();
         

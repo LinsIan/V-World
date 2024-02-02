@@ -15,39 +15,29 @@ using VContainer;
 using Mediapipe.Tasks.Components.Containers;
 using Mediapipe.Tasks.Vision.FaceLandmarker;
 using UniRx;
+using VWorld.Data;
 
 
 namespace VWorld
 {
     public class Live2DLiveSystem : LiveSystem
     {
-        private Live2DFaceDataCalculator faceDataCalculator;
-        
         [Inject]
-        public Live2DLiveSystem(Live2DFaceDataCalculator faceDataCalculator, ModelData modelData, ModelController modelController, FaceLandmarkerRunner runner) 
+        public Live2DLiveSystem(ICalculator<FaceData> faceDataCalculator, ModelData modelData, Live2DModelController modelController, FaceLandmarkerRunner runner) 
         : base(modelData, modelController, runner)
         {
-            this.faceDataCalculator = faceDataCalculator;
             runner.Result.Subscribe(result => 
             {
                 if (result.faceLandmarks != null && result.faceLandmarks.Count > 0)
                 {
                     faceDataCalculator.OnLandmarkDetectionOutput(result.faceLandmarks[0].landmarks);
                 }
-            });
-        }
+            }).AddTo(disposables);
 
-        protected override async UniTask InitSubSystem()
-        {
-
-            // graph.OnFaceLandmarksWithIrisOutput += faceDataCalculator.OnLandmarksOutput;
-
-            // if (modelController is Live2DModelController controller)
-            // {
-            //     faceDataCalculator.OnFaceDataOutput += controller.OnFaceDataOutput;
-            // }
-
-            await base.InitSubSystem();
+            faceDataCalculator.LastestData.Subscribe(data => 
+            {
+                modelController.OnFaceDataOutput(data);
+            }).AddTo(disposables);
         }
     }
 }

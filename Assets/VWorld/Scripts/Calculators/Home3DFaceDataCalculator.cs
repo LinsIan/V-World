@@ -9,10 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Mediapipe;
-using Mediapipe.Unity;
 using VWorld.Data;
-using VWorld.Common;
 
 namespace VWorld
 {
@@ -30,7 +27,7 @@ namespace VWorld
             FilteredkeyPointsIndex.Add(NosePointIndex);
             base.SetFilteredKeyPointsIndex();
         }
-        
+
         protected override FaceData Calculate()
         {
             bool isNotWink = (EyeLOpen - EyeROpen <= WinkEyeDistance) && (EyeROpen - EyeLOpen <= WinkEyeDistance);

@@ -26,7 +26,7 @@ namespace VWorld
         protected ModelData modelData;
         protected ModelController modelController;
         protected ITaskApiRunner runner;
-        CompositeDisposable disposables = new CompositeDisposable();
+        protected CompositeDisposable disposables = new CompositeDisposable();
         protected bool isRunning = false;
 
         public LiveSystem(ModelData modelData, ModelController modelController, ITaskApiRunner runner)

@@ -7,11 +7,13 @@
 
 using System.Collections.Generic;
 using Mediapipe.Tasks.Components.Containers;
+using UniRx;
 
 namespace VWorld
 {
-    public interface ICalculator
+    public interface ICalculator<T>
     {
+        public ReactiveProperty<T> LastestData { get; }
         public abstract void OnLandmarkDetectionOutput(IReadOnlyList<NormalizedLandmark> landmarks);
     }
 }
