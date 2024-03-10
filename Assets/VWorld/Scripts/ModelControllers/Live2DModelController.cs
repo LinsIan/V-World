@@ -107,7 +107,7 @@ namespace VWorld
         //called from thread
         public void OnFaceDataOutput(FaceData data)
         {
-            interpolator.UpdateData(data);
+            interpolator?.UpdateData(data);
         }
 
         public void SetMotionRate()

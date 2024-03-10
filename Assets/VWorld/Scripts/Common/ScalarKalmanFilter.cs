@@ -15,8 +15,9 @@ namespace VWorld.Common
 
     public class ScalarKalmanFilter
     {
-        private const float DefaultQ = 0.0001f;
-        private const float DefaultR = 0.002f;
+        // 越相信測量值速度就越快，但是平滑度就越低
+        private const float DefaultQ = 0.0001f; // 越大越相信測量值而不是預測值
+        private const float DefaultR = 0.002f; // 越大越相信預測值而不是測量值
         private const float DefaultP = 1;
 
         public Vector3 value;  // 系統的狀態量
