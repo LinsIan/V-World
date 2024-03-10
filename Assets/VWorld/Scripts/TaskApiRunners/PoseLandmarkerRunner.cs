@@ -65,5 +65,10 @@ namespace VWorld
         {
             this.result.Value = result;
         }
+
+        protected override void SetupAnnotationController(Mediapipe.Unity.ImageSource imageSource, bool expectedToBeMirrored = false)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

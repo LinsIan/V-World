@@ -27,8 +27,8 @@ namespace VWorld
         protected bool isPaused;
         protected TTask taskApi;
         protected CancellationTokenSource cancellationTokenSource;
+        protected TextureFramePool textureFramePool;
         private readonly Stopwatch _stopwatch = new();
-        private TextureFramePool textureFramePool;
 
         public TaskApiRunner(Bootstrap bootstrap, Screen screen)
         {
@@ -52,7 +52,7 @@ namespace VWorld
             isPaused = false;
             _stopwatch.Restart();
             cancellationTokenSource = new CancellationTokenSource();
-            Run().Forget();
+            UniTask.Void(async (token) => await Run(), cancellationTokenSource.Token);
         }
 
         public void Pause()
@@ -79,7 +79,7 @@ namespace VWorld
             taskApi = null;
         }
 
-        protected async UniTaskVoid Run()
+        protected async UniTask Run()
         {
             await InitTaskApi();
 
@@ -99,6 +99,7 @@ namespace VWorld
 
             // NOTE: The screen will be resized later, keeping the aspect ratio.
             screen.Initialize(imageSource);
+            SetupAnnotationController(imageSource);
 
             var transformationOptions = imageSource.GetTransformationOptions();
             var flipHorizontally = transformationOptions.flipHorizontally;
@@ -147,6 +148,7 @@ namespace VWorld
         }
 
         protected abstract UniTask InitTaskApi();
+        protected abstract void SetupAnnotationController(Mediapipe.Unity.ImageSource imageSource ,bool expectedToBeMirrored = false);
         protected abstract void Detect(Image image, ImageProcessingOptions options);
         protected abstract void DetectForVideo(Image image, int timestamp, ImageProcessingOptions options);
         protected abstract void DetectAsync(Image image, int timestamp, ImageProcessingOptions options);

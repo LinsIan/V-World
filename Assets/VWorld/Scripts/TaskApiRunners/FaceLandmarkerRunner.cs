@@ -9,6 +9,7 @@ using Mediapipe.Tasks.Vision.FaceLandmarker;
 using Cysharp.Threading.Tasks;
 using Mediapipe;
 using Mediapipe.Tasks.Vision.Core;
+using Mediapipe.Unity;
 using Mediapipe.Unity.Sample;
 using Mediapipe.Unity.Sample.FaceLandmarkDetection;
 using VContainer;
@@ -16,16 +17,20 @@ using UniRx;
 
 namespace VWorld
 {
+    using RunningMode = Mediapipe.Tasks.Vision.Core.RunningMode;
+
     public class FaceLandmarkerRunner : TaskApiRunner<FaceLandmarker>
     {
         public readonly FaceLandmarkDetectionConfig config = new();
         public IReadOnlyReactiveProperty<FaceLandmarkerResult> Result => result;
 
         private ReactiveProperty<FaceLandmarkerResult> result = new();
+        private FaceLandmarkerResultAnnotationController annotationController;
 
         [Inject]
-        public FaceLandmarkerRunner(Bootstrap bootstrap, Mediapipe.Unity.Screen screen) : base(bootstrap, screen)
+        public FaceLandmarkerRunner(FaceLandmarkerResultAnnotationController annotationController, Bootstrap bootstrap, Mediapipe.Unity.Screen screen) : base(bootstrap, screen)
         {
+            this.annotationController = annotationController;
         }
 
         protected override async UniTask InitTaskApi()
@@ -45,9 +50,22 @@ namespace VWorld
             taskApi = FaceLandmarker.CreateFromOptions(options);
         }
 
+        protected override void SetupAnnotationController(ImageSource imageSource ,bool expectedToBeMirrored = false)
+        {
+            annotationController.isMirrored = expectedToBeMirrored;
+            annotationController.imageSize = new Vector2Int(imageSource.textureWidth, imageSource.textureHeight);
+        }
+
         protected override void Detect(Image image, ImageProcessingOptions options)
         {
-            taskApi.Detect(image, options);
+            var result = taskApi.Detect(image, options);
+            annotationController.DrawNow(result);
+        }
+
+        protected override void DetectForVideo(Image image, int timestamp, ImageProcessingOptions options)
+        {
+            var result = taskApi.DetectForVideo(image, timestamp, options);
+            annotationController.DrawNow(result);
         }
 
         protected override void DetectAsync(Image image, int timestamp, ImageProcessingOptions options)
@@ -55,14 +73,10 @@ namespace VWorld
             taskApi.DetectAsync(image, timestamp, options);
         }
 
-        protected override void DetectForVideo(Image image, int timestamp, ImageProcessingOptions options)
-        {
-            taskApi.DetectForVideo(image, timestamp, options);
-        }
-
         private void OnFaceLandmarkDetectionOutput(FaceLandmarkerResult result, Image image, int timestamp)
         {
             this.result.Value = result;
+            annotationController.DrawLater(result);
         }
 
     }
