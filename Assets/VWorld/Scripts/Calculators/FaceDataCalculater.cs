@@ -118,7 +118,7 @@ namespace VWorld
             //angle Z
             var skewVector = leftPoint - rightPoint;
             skewVector.z = 0;
-            angle.z = Quaternion.FromToRotation(Vector3.right, skewVector).eulerAngles.z;
+            angle.z = Quaternion.FromToRotation(Vector3.left, skewVector).eulerAngles.z;
             return angle;
         }
 

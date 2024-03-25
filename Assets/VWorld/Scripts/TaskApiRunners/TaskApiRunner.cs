@@ -20,7 +20,7 @@ namespace VWorld
 {
     using Screen = Mediapipe.Unity.Screen;
 
-    public abstract class TaskApiRunner<TTask> : IStartable, ITaskApiRunner where TTask : BaseVisionTaskApi
+    public abstract class TaskApiRunner<TTask> : IStartable, IDisposable, ITaskApiRunner where TTask : BaseVisionTaskApi
     {
         protected Bootstrap bootstrap;
         protected Screen screen;
@@ -154,5 +154,11 @@ namespace VWorld
         protected abstract void DetectAsync(Image image, int timestamp, ImageProcessingOptions options);
 
         protected long GetCurrentTimestampMillisec() => _stopwatch.IsRunning ? _stopwatch.ElapsedTicks / TimeSpan.TicksPerMillisecond : -1;
+
+        public void Dispose()
+        {
+            Stop();
+            textureFramePool?.Dispose();
+        }
     }
 }

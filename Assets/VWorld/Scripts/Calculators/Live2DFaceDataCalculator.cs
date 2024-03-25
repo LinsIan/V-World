@@ -28,9 +28,11 @@ namespace VWorld
             FiltKeyPoints();
             Vector3 eulerAngle = GetFaceEulerAngles(filteredKeyPoints[MidFaceDirectionPointIndex], filteredKeyPoints[LeftFaceDirectionPointIndex], filteredKeyPoints[RightFaceDirectionPointIndex]);
 
-            if (eulerAngle.y > 180)
+            eulerAngle.y *= -1;
+
+            if (eulerAngle.y < -180)
             {
-                eulerAngle.y -= 360;
+                eulerAngle.y += 360;
             }
 
             eulerAngle.x *= -1;
@@ -40,11 +42,9 @@ namespace VWorld
                 eulerAngle.x += 360;
             }
 
-            eulerAngle.z *= -1;
-            
-            if (eulerAngle.z < -180)
+            if (eulerAngle.z > 180)
             {
-                eulerAngle.z += 360;
+                eulerAngle.z -= 360;
             }
 
             var leftEye = GetCenterPoint(keyPoints.LeftEyePoints);

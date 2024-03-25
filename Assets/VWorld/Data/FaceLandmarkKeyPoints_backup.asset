@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22090c007f96b40098274516b06ef19a, type: 3}
-  m_Name: FaceLandmarkKeyPoints
+  m_Name: FaceLandmarkKeyPoints_backup
   m_EditorClassIdentifier: 
   faceDirectionPoints:
   - <Direction>k__BackingField: 4
     <Index>k__BackingField: 6
-  - <Direction>k__BackingField: 3
-    <Index>k__BackingField: 127
   - <Direction>k__BackingField: 2
+    <Index>k__BackingField: 127
+  - <Direction>k__BackingField: 3
     <Index>k__BackingField: 356
   outerLipsPoints:
   - <Direction>k__BackingField: 0
@@ -30,20 +30,11 @@ MonoBehaviour:
   - <Direction>k__BackingField: 1
     <Index>k__BackingField: 14
   horizonMouthPoints:
-  - <Direction>k__BackingField: 3
-    <Index>k__BackingField: 61
   - <Direction>k__BackingField: 2
+    <Index>k__BackingField: 61
+  - <Direction>k__BackingField: 3
     <Index>k__BackingField: 291
   leftEyePoints:
-  - <Direction>k__BackingField: 2
-    <Index>k__BackingField: 362
-  - <Direction>k__BackingField: 3
-    <Index>k__BackingField: 263
-  - <Direction>k__BackingField: 1
-    <Index>k__BackingField: 373
-  - <Direction>k__BackingField: 0
-    <Index>k__BackingField: 386
-  rightEyePoints:
   - <Direction>k__BackingField: 2
     <Index>k__BackingField: 33
   - <Direction>k__BackingField: 3
@@ -52,7 +43,16 @@ MonoBehaviour:
     <Index>k__BackingField: 145
   - <Direction>k__BackingField: 0
     <Index>k__BackingField: 159
+  rightEyePoints:
+  - <Direction>k__BackingField: 2
+    <Index>k__BackingField: 362
+  - <Direction>k__BackingField: 3
+    <Index>k__BackingField: 263
+  - <Direction>k__BackingField: 1
+    <Index>k__BackingField: 373
+  - <Direction>k__BackingField: 0
+    <Index>k__BackingField: 386
   <NosePoint>k__BackingField: 1
   <ChinPoint>k__BackingField: 152
-  <LeftIrisPoint>k__BackingField: 473
-  <RightIrisPoint>k__BackingField: 468
+  <LeftIrisPoint>k__BackingField: 468
+  <RightIrisPoint>k__BackingField: 473
