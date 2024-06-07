@@ -71,10 +71,10 @@ namespace VWorld
         {
             isPaused = true;
             _stopwatch.Stop();
-            ImageSourceProvider.ImageSource.Stop();
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();
             cancellationTokenSource = null;
+            ImageSourceProvider.ImageSource.Stop();
             taskApi?.Close();
             taskApi = null;
         }
@@ -126,6 +126,11 @@ namespace VWorld
                 if (req.hasError)
                 {
                     Debug.LogError($"Failed to read texture from the image source, exiting...");
+                    break;
+                }
+                
+                if (textureFrame.texture == null)
+                {
                     break;
                 }
 
